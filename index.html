@@ -306,14 +306,11 @@
   .tr-rate{font-size:13px}
   .want-btn{min-height:48px}
   .backbtn{padding:10px 0;margin:-8px 0}
-  /* ---- park page: About reads as a tinted notecard, not a campground card ---- */
-  .about-toggle{background:color-mix(in srgb, var(--forest) 9%, var(--paper));
-    border-color:color-mix(in srgb, var(--forest) 24%, var(--line));color:var(--ink)}
-  .about-body{background:color-mix(in srgb, var(--forest) 9%, var(--paper));
-    border-color:color-mix(in srgb, var(--forest) 24%, var(--line));border-top:none}
-  .about-body::before{border-top:1px solid color-mix(in srgb, var(--forest) 18%, var(--line))}
+  /* ---- park page: About matches campground cards but titled in ink ---- */
+  .about-toggle{color:var(--ink)}
   /* section headings (Campgrounds / Trails / Top sites) in ink, not accent */
   .seclabel{color:var(--ink)}
+  .backbtn{font-size:16.5px;font-weight:800;letter-spacing:-.01em}
 </style>
 </head>
 <body>
@@ -346,7 +343,7 @@
 
 <section id="view-park" hidden>
   <div class="backbar"><div class="inner">
-    <button class="backbtn" id="backBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg>All parks</button>
+    <button class="backbtn" id="backBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m15 18-6-6 6-6"/></svg><span id="backLabel">All parks</span></button>
   </div></div>
   <div class="wrap" id="parkBody"></div>
 </section>
@@ -546,6 +543,7 @@ let curPark=null;
 function facilChip(name){ return `<span class="facil"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l4 4 10-10"/></svg>${name}</span>`; }
 function openPark(pid){
   curPark=PARK_BY_ID[pid]; const p=curPark; const st=parkStats(p);
+  document.getElementById('backLabel').textContent=p.name;
   document.getElementById('parkBody').innerHTML=`
     <div class="park-head"><h2 id="parkTitle" style="cursor:pointer">${p.name}</h2>
       <button class="about-toggle" id="aboutToggle" aria-expanded="false">About ${p.name}<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></button>
