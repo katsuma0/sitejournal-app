@@ -53,14 +53,13 @@ and run `node --check` on it.
 - Rating heatmap (`STOPS`, clay→green) is tinted ~14% toward the active theme via `color-mix(in srgb, <stop> 86%, var(--forest))` in `scoreColor()`. Don't hardcode score colours elsewhere.
 - **Every new park batch must add a matching theme** in `PARK_THEMES` (the x/NN counter updates automatically).
 
-## Data status (v52)
-- 28 parks, ~9,270 sites, 92 trails. All sites `verified=0` (estimates) EXCEPT ranges corrected from official Ontario Parks campground-map PDFs for Grundy Lake, Killbear, Killarney George Lake (those PDFs are text-extractable only for "Northeast Zone" maps; southern parks' maps are image-only).
+## Data status (v56)
+- 38 parks, ~11,235 sites, 124 trails. All sites `verified=0` (estimates) EXCEPT ranges corrected from official Ontario Parks campground-map PDFs for Grundy Lake, Killbear, Killarney George Lake (those PDFs are text-extractable only for "Northeast Zone" maps; southern parks' maps are image-only).
 - Algonquin is split into 9 top-level parks (one per car campground): ids `algonquintea, algonquincanisbay, algonquinmew, algonquintworivers, algonquinpog, algonquinkearney, algonquinraccoon, algonquinrock, algonquinachray`, names "Tea Lake", "Canisbay", etc. Corridor trails were assigned to the nearest campground by KM. A one-time JS migration (`migrateAlgonquin` / `migrateAlgPhotos`) moves any old `algonquin#` keys — keep it in place.
 - The fishing chip links to `https://katsuma0.github.io/onfishingreg/#zone=NN` (zone parsed from the park's fmz field).
 
-## Park roadmap (add in this order, in batches, each with a theme)
-Lake Superior (Northern Park · Wawa area), Turkey Point (Southwest Park), Emily (Central Park · Kawarthas), Mara (Central Park · Orillia), Bonnechere (Southeast Park · Ottawa Valley), Mikisew (Near North Park), Rondeau (Southwest Park), Neys (Northern Park), Batchawana Bay (Northern Park), Chutes (Northern Park · Massey), Fairbank (Northern Park · Sudbury area).
-Research campground names/site ranges via web search; mark estimates `verified=0`; blurbs get the park's character + location, no em dashes.
+## Park roadmap
+Katsuma's full top-30 list is COMPLETE as of v56 (Lake Superior, Turkey Point, Emily, Mara, Bonnechere, Mikisew, Rondeau, Neys, Chutes, and Fairbank all added with themes). Batchawana Bay was skipped: it is a day-use-only park with no campsites. If more parks are requested later: research campground names/site ranges via web search; mark estimates `verified=0`; blurbs get the park's character + location, no em dashes; add a matching theme (light for early alphabet, dark for later); region format `"Broad Park · Town"` (Algonquin plain). Site numbering for most 2024+ additions is estimated; northern parks (Lake Superior, Neys, Chutes, Fairbank, Mikisew) may have text-readable Northeast Zone campground-map PDFs for a future verification pass.
 
 ## Skipped / declined (don't re-suggest)
 - Campground map images/PDFs in the app (too heavy for now).
