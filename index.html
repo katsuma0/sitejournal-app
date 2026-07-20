@@ -209,9 +209,10 @@
   .stat{border:1px solid var(--line);border-radius:var(--r-sm);padding:14px 12px;background:var(--card)}
   .stat .v{font-weight:800;font-size:24px;line-height:1;font-variant-numeric:tabular-nums}
   .stat .l{font-size:10px;color:var(--moss);font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:6px}
-  .want-item{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:var(--r-sm);padding:var(--pad-card);margin-bottom:var(--gap-m);background:var(--card);cursor:pointer}
+  .want-item{border:1px solid color-mix(in srgb, var(--amber) 45%, var(--line));border-left:3px solid var(--amber);border-radius:var(--r-sm);padding:var(--pad-card);margin-bottom:var(--gap-m);background:color-mix(in srgb, var(--amber) 8%, var(--card));cursor:pointer}
   .want-item .h{display:flex;align-items:center;gap:var(--gap-m)}
-  .want-item .h b{font-weight:800;font-size:15px} .want-item .h .where{font-size:12px;color:var(--moss)}
+  .want-item .h b{font-weight:800;font-size:15px}
+  .want-item .wstar{color:var(--amber);font-size:15px;line-height:1} .want-item .h .where{font-size:12px;color:var(--moss)}
   .want-item .h .val{margin-left:auto;font-weight:800;font-size:12px;padding:2px 9px;border-radius:99px;color:#fff;font-variant-numeric:tabular-nums}
   .want-item p{margin:8px 0 0;font-size:13.5px;color:var(--moss);white-space:pre-wrap}
   .want-item .noreason{color:var(--amber);font-weight:700}
@@ -532,7 +533,7 @@ function renderParks(){ const box=document.getElementById('parkList'); box.inner
   shown.forEach(p=>{ const st=parkStats(p); const started=st.rated>0;
     const b=document.createElement('button'); b.className='park-card';
     b.innerHTML=`<div class="pc-top"><span class="pc-name">${p.name}</span>${started?`<span class="pc-pct tnum">${st.rated}/${st.total}</span>`:''}</div>
-      <div class="pc-region">${p.region}</div>
+      <div class="pc-region">${(p.region||'').split(' · ').slice(1).join(' · ')||p.region}</div>
       <div class="pc-meta"><span>${p.campgrounds.length} campgrounds</span><span>·</span><span>${st.total} sites</span>${started?`<span>·</span><span>${st.rated} scouted</span>`:''}</div>
       ${started?`<div class="pc-bar"><i style="width:${st.pct}%"></i></div>`:''}`;
     b.addEventListener('click',()=>openPark(p.id)); box.appendChild(b); }); }
@@ -719,7 +720,7 @@ async function renderGlance(){ const p=curPark, st=parkStats(p); const rated=[],
   const wantSec=document.getElementById('wantSection'); if(wantSec) wantSec.hidden = wl.length===0;
   const topSec=document.getElementById('topSection'); if(topSec) topSec.hidden = rated.length===0;
   const wlBox=document.getElementById('wantList'); if(!wlBox) return;
-  wlBox.innerHTML=wl.length?wl.map(w=>`<div class="want-item" data-key="${w.k}"><div class="h"><b>${w.cg.id}, Site ${w.s}</b>${(w.e.score!=null)?`<span class="val" style="background:${scoreColor(w.e.score)}">${w.e.score}/5</span>`:''}</div><p>${w.e.note&&w.e.note.trim()?w.e.note.replace(/</g,'&lt;'):''}</p><div class="want-thumbs" data-thumbs="${w.k}"></div></div>`).join('')
+  wlBox.innerHTML=wl.length?wl.map(w=>`<div class="want-item" data-key="${w.k}"><div class="h"><span class="wstar">★</span><b>${w.cg.id}, Site ${w.s}</b>${(w.e.score!=null)?`<span class="val" style="background:${scoreColor(w.e.score)}">${w.e.score}/5</span>`:''}</div><p>${w.e.note&&w.e.note.trim()?w.e.note.replace(/</g,'&lt;'):''}</p><div class="want-thumbs" data-thumbs="${w.k}"></div></div>`).join('')
     : `<div class="empty">Star sites with “Want this one” to build your booking shortlist.</div>`;
   wl.forEach(async w=>{ const t=wlBox.querySelector(`[data-thumbs="${CSS.escape(w.k)}"]`); if(!t) return; const ph=await getPhotos(w.k); t.innerHTML=ph.slice(0,6).map(x=>`<img src="${x.data}" alt="">`).join(''); });
   wlBox.querySelectorAll('.want-item').forEach(el=>el.addEventListener('click',(ev)=>{ if(ev.target.tagName!=='IMG'){ const parts=el.dataset.key.split('#'); openSheet('site',el.dataset.key,parts[1],parts.slice(2).join('#')); } }));
