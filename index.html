@@ -240,8 +240,8 @@
   .sheet h3{font-weight:800;font-size:26px;margin:3px 0 2px;letter-spacing:-.01em}
   .sheet .ctx{font-size:13px;color:var(--moss);margin-bottom:20px}
   .fld{display:block;font-size:11.5px;font-weight:800;color:var(--moss);margin:0 0 10px;text-transform:uppercase;letter-spacing:.05em}
-  .dots{display:flex;gap:var(--gap-s);justify-content:center;margin-bottom:20px}
-  .dot{flex:1;min-height:48px;max-width:56px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:700;font-size:15px;color:var(--moss);display:flex;align-items:center;justify-content:center;transition:.12s;-webkit-tap-highlight-color:transparent}
+  .dots{display:flex;gap:var(--gap-s);margin-bottom:20px}
+  .dot{flex:1;min-height:48px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card);cursor:pointer;font-weight:700;font-size:15px;color:var(--moss);display:flex;align-items:center;justify-content:center;transition:.12s;-webkit-tap-highlight-color:transparent}
   .dot:active{transform:scale(.88)} .dot.on{color:#fff;border-color:transparent}
   .want-btn{width:100%;cursor:pointer;font-weight:800;font-size:14px;border:1.5px solid var(--amber);background:var(--card);color:var(--amber);border-radius:var(--r-sm);padding:14px;margin-bottom:20px;transition:.15s}
   .want-btn[aria-pressed="true"]{background:var(--amber);color:var(--paper)}
@@ -318,6 +318,11 @@
   .want-item{min-height:var(--row-h);display:flex;flex-direction:column;justify-content:center}
   .want-item p:empty{display:none}
   .want-item .want-thumbs:empty{display:none;margin:0}
+  .photo-actions{display:flex;gap:var(--gap-m);margin-top:10px}
+  .pa-btn{flex:1;min-height:48px;display:flex;align-items:center;justify-content:center;gap:var(--gap-s);appearance:none;cursor:pointer;
+    border:1px solid var(--line);background:var(--card);color:var(--forest);font-family:inherit;font-weight:700;font-size:14px;border-radius:var(--r-sm)}
+  .pa-btn:active{transform:scale(.98)}
+  .pa-btn:disabled{opacity:.5}
 </style>
 </head>
 <body>
@@ -376,7 +381,12 @@
     <label class="fld" style="margin-bottom:4px">Photos</label>
   <div class="photo-note">Please do not photograph occupied sites.</div>
     <div class="photos" id="photos"></div>
+    <div class="photo-actions">
+      <button class="pa-btn" id="cameraBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L8 6H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-4l-1.5-2Z"/><circle cx="12" cy="12.5" r="3.2"/></svg>Camera</button>
+      <button class="pa-btn" id="libraryBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Add photos</button>
+    </div>
     <input type="file" id="photoInput" accept="image/*" multiple hidden>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
   </div>
   <div class="sheet-foot">
     <span class="saved" id="saved">saved</span>
@@ -540,8 +550,7 @@ function renderParks(){ const box=document.getElementById('parkList'); box.inner
   shown.forEach(p=>{ const st=parkStats(p); const started=st.rated>0;
     const b=document.createElement('button'); b.className='park-card';
     b.innerHTML=`<div class="pc-top"><span class="pc-name">${p.name}</span>${started?`<span class="pc-pct tnum">${st.rated}/${st.total}</span>`:''}</div>
-      <div class="pc-region">${(p.region||'').split(' · ').slice(1).join(' · ')||p.region}</div>
-      <div class="pc-meta"><span>${p.campgrounds.length} campgrounds</span><span>·</span><span>${st.total} sites</span>${started?`<span>·</span><span>${st.rated} scouted</span>`:''}</div>
+      <div class="pc-meta"><span>${(p.region||'').indexOf('Algonquin')===0?'Algonquin':((p.region||'').split(' · ').slice(1).join(' · ')||p.region)}</span><span>·</span><span>${p.campgrounds.length} campgrounds</span><span>·</span><span>${st.total} sites</span>${started?`<span>·</span><span>${st.rated} scouted</span>`:''}</div>
       ${started?`<div class="pc-bar"><i style="width:${st.pct}%"></i></div>`:''}`;
     b.addEventListener('click',()=>openPark(p.id)); box.appendChild(b); }); }
 
@@ -704,14 +713,16 @@ async function renderPhotos(k){ const box=document.getElementById('photos'); box
     d.querySelector('img').addEventListener('click',()=>openLightbox(p.data));
     d.querySelector('.del').addEventListener('click',async(e)=>{ e.stopPropagation(); const next=(await getPhotos(k)).filter(x=>x.id!==p.id); await putPhotos(k,next); renderPhotos(k); if(cur.site) refreshChip(k); else if(cur.type==='trail') refreshTrailCard(cur.trailName); });
     box.appendChild(d); });
-  const add=document.createElement('button'); add.className='addphoto';
-  add.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L8 6H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-4l-1.5-2Z"/><circle cx="12" cy="12.5" r="3.2"/></svg>Add`;
-  add.addEventListener('click',()=>document.getElementById('photoInput').click()); box.appendChild(add); }
-document.getElementById('photoInput').addEventListener('change',async(e)=>{ const files=Array.from(e.target.files||[]); if(!files.length) return; const k=cur.k;
-  const add=document.querySelector('#photos .addphoto'); if(add){ add.disabled=true; add.textContent='…'; }
+}
+async function handlePhotoFiles(e){ const files=Array.from(e.target.files||[]); if(!files.length) return; const k=cur.k;
+  const btns=document.querySelectorAll('.pa-btn'); btns.forEach(b=>b.disabled=true);
   const list=await getPhotos(k);
   for(const f of files){ try{ const data=await compress(f); list.push({id:'p'+Date.now()+Math.random().toString(36).slice(2,6),data}); }catch(err){} }
-  await putPhotos(k,list); e.target.value=''; buzz(9); renderPhotos(k); if(cur.site) refreshChip(k); else if(cur.type==='trail') refreshTrailCard(cur.trailName); renderGlance(); });
+  await putPhotos(k,list); e.target.value=''; buzz(9); renderPhotos(k); if(cur.site) refreshChip(k); else if(cur.type==='trail') refreshTrailCard(cur.trailName); renderGlance(); btns.forEach(b=>b.disabled=false); }
+document.getElementById('photoInput').addEventListener('change',handlePhotoFiles);
+document.getElementById('cameraInput').addEventListener('change',handlePhotoFiles);
+document.getElementById('cameraBtn').addEventListener('click',()=>document.getElementById('cameraInput').click());
+document.getElementById('libraryBtn').addEventListener('click',()=>document.getElementById('photoInput').click());
 function openLightbox(src){ document.getElementById('lightboxImg').src=src; document.getElementById('lightbox').classList.add('on'); }
 document.getElementById('lightbox').addEventListener('click',()=>document.getElementById('lightbox').classList.remove('on'));
 
