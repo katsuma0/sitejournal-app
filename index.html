@@ -565,7 +565,7 @@ function openPark(pid){
       <div class="stat"><div class="v tnum" id="s-want">0</div><div class="l">Wishlist</div></div>
     </div>
     </div>
-    <div id="wantSection" hidden><div class="seclabel">Shortlist for next visit</div><div id="wantList"></div></div>
+    <div id="wantSection" hidden><div class="seclabel">Wishlist</div><div id="wantList"></div></div>
     <div id="topSection" hidden><div class="seclabel">Top sites</div><ul class="rank" id="topSites"></ul></div>`;
   renderCgs(); renderTrails(); wireParkControls(); updatePark(); renderGlance();
   document.getElementById('parkTitle').addEventListener('click',function(){ onParkNameTap(p); });
@@ -719,7 +719,7 @@ async function renderGlance(){ const p=curPark, st=parkStats(p); const rated=[],
   const wantSec=document.getElementById('wantSection'); if(wantSec) wantSec.hidden = wl.length===0;
   const topSec=document.getElementById('topSection'); if(topSec) topSec.hidden = rated.length===0;
   const wlBox=document.getElementById('wantList'); if(!wlBox) return;
-  wlBox.innerHTML=wl.length?wl.map(w=>`<div class="want-item" data-key="${w.k}"><div class="h"><b>Site ${w.s}</b><span class="where">${w.cg.id}</span>${(w.e.score!=null)?`<span class="val" style="background:${scoreColor(w.e.score)}">${w.e.score}/5</span>`:''}</div><p>${w.e.note&&w.e.note.trim()?w.e.note.replace(/</g,'&lt;'):'<span class="noreason">Add a reason so you remember why →</span>'}</p><div class="want-thumbs" data-thumbs="${w.k}"></div></div>`).join('')
+  wlBox.innerHTML=wl.length?wl.map(w=>`<div class="want-item" data-key="${w.k}"><div class="h"><b>${w.cg.id}, Site ${w.s}</b>${(w.e.score!=null)?`<span class="val" style="background:${scoreColor(w.e.score)}">${w.e.score}/5</span>`:''}</div><p>${w.e.note&&w.e.note.trim()?w.e.note.replace(/</g,'&lt;'):''}</p><div class="want-thumbs" data-thumbs="${w.k}"></div></div>`).join('')
     : `<div class="empty">Star sites with “Want this one” to build your booking shortlist.</div>`;
   wl.forEach(async w=>{ const t=wlBox.querySelector(`[data-thumbs="${CSS.escape(w.k)}"]`); if(!t) return; const ph=await getPhotos(w.k); t.innerHTML=ph.slice(0,6).map(x=>`<img src="${x.data}" alt="">`).join(''); });
   wlBox.querySelectorAll('.want-item').forEach(el=>el.addEventListener('click',(ev)=>{ if(ev.target.tagName!=='IMG'){ const parts=el.dataset.key.split('#'); openSheet('site',el.dataset.key,parts[1],parts.slice(2).join('#')); } }));
