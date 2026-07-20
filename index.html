@@ -359,6 +359,10 @@
   #view-park.dragback{position:fixed;left:0;right:0;z-index:5;background:var(--paper);
     max-width:720px;margin:0 auto;padding:0 18px;min-height:100vh;
     box-shadow:-12px 0 34px rgba(0,0,0,.14);touch-action:pan-y;will-change:transform}
+  .parkfoot{margin:26px 0 6px;text-align:center}
+  .verline{font-size:12.5px;color:var(--moss);margin:7px 0;line-height:1.5}
+  .verline .vv{font-weight:800;color:var(--ink);margin-right:9px;font-variant-numeric:tabular-nums}
+  .about-scout .fld{margin-top:16px}
 </style>
 </head>
 <body>
@@ -366,7 +370,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.110 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.111 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -381,9 +385,20 @@
     <details class="about-scout">
       <summary>About Site Journal<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="body">
+        <label class="fld">Motivation</label>
         <p>I've been camping since I was a kid, but now I'm the person in charge of booking the campsites I visit with family and friends. It's difficult to choose the right campsite, and to be frank, there are some campsites out there that are flat out bad compared to others.</p>
         <p>So I wanted to create a personal logger where you can log your favourite sites and the ones you'd rather avoid. When you have free time out camping, you can take a nice walk around the campground and jot down which sites you'd like to book next, give it a rating, and so on.</p>
         <p>It's a nice excuse for a walk around the campgrounds, and it gives you ease knowing which campsite to book next time and not be surprised with a funky site.</p>
+        <label class="fld">Versions</label>
+        <div class="verline"><span class="vv">v0.110</span>Pull a park page sideways to go back, and home remembers where you were</div>
+        <div class="verline"><span class="vv">v0.106</span>Reset all data, haptics on everything, smoother animations</div>
+        <div class="verline"><span class="vv">v0.105</span>The version badge you used to find this list</div>
+        <div class="verline"><span class="vv">v0.104</span>Search tidied up, notes box no longer zooms the screen</div>
+        <div class="verline"><span class="vv">v0.100</span>Every reservable Ontario Park included, sort by driving time from the GTA</div>
+        <div class="verline"><span class="vv">v0.93</span>Pin your parks, sort by progress or rating</div>
+        <div class="verline"><span class="vv">v0.92</span>Day-use parks with their own park rating</div>
+        <div class="verline"><span class="vv">v0.79</span>Wishlist borders, campground photos, the yellow star era ends</div>
+        <div class="verline"><span class="vv">v0.62</span>Region filter arrives</div>
       </div>
     </details>
   </div>
@@ -680,7 +695,8 @@ function openPark(pid){
     </div>
     </div>
     <div id="wantSection" hidden><div class="seclabel">Wishlist</div><div id="wantList"></div></div>
-    <div id="topSection" hidden><div class="seclabel">Top sites</div><ul class="rank" id="topSites"></ul></div>`;
+    <div id="topSection" hidden><div class="seclabel">Top sites</div><ul class="rank" id="topSites"></ul></div>
+    <div class="parkfoot"><button class="resetlink" id="parkResetBtn">Reset ${p.name} data</button></div>`;
   renderCgs(); renderTrails(); wireParkControls(); updatePark(); renderGlance();
   document.getElementById('parkTitle').addEventListener('click',function(){ onParkNameTap(p); });
   homeScrollY=window.scrollY||document.documentElement.scrollTop||0;
@@ -778,7 +794,25 @@ function wireParkControls(){
   if(pr){ pr.addEventListener('click',()=>openSheet('campground',cidOf(curPark.id,curPark.name),curPark.name,null)); refreshParkRate(); }
   const pb=document.getElementById('pinBtn');
   if(pb){ pb.addEventListener('click',()=>{ togglePin(curPark.id); pb.classList.toggle('on',isPinned(curPark.id)); buzz(9); renderParks(); }); }
+  const prb=document.getElementById('parkResetBtn');
+  if(prb){ let armed=false, t=null; const orig=prb.textContent;
+    prb.addEventListener('click',async()=>{
+      if(!armed){ armed=true; prb.textContent='Tap again to erase this park'; prb.classList.add('armed');
+        t=setTimeout(()=>{ armed=false; prb.textContent=orig; prb.classList.remove('armed'); },4000); return; }
+      clearTimeout(t); await wipeParkData(curPark.id); });
+  }
 }
+async function wipeParkData(pid){
+  ['site','campground','trail'].forEach(b=>{ if(!state[b]) return;
+    Object.keys(state[b]).forEach(k=>{ if(k.indexOf(pid+'#')===0) delete state[b][k]; }); });
+  if(Array.isArray(state.pins)){ const i=state.pins.indexOf(pid); if(i>=0) state.pins.splice(i,1); }
+  persist();
+  try{ const db=await openDB(); await new Promise(res=>{ const tx=db.transaction(STORE,'readwrite'); const st=tx.objectStore(STORE);
+    const rq=st.getAllKeys(); rq.onsuccess=()=>{ (rq.result||[]).forEach(k=>{ if(String(k).indexOf(pid+'#')===0) st.delete(k); }); };
+    tx.oncomplete=()=>res(); tx.onerror=()=>res(); }); }catch(e){}
+  await loadPhotoIndex();
+  showThemeToast('Cleared. Fresh start for this park.');
+  openPark(pid); renderParks(); }
 
 /* ================= sheet ================= */
 /* ================= trails ================= */
