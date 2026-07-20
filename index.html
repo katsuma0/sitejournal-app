@@ -310,7 +310,6 @@
   .about-toggle{color:var(--ink)}
   /* section headings (Campgrounds / Trails / Top sites) in ink, not accent */
   .seclabel{color:var(--ink)}
-  .backbtn{font-size:16.5px;font-weight:800;letter-spacing:-.01em}
 </style>
 </head>
 <body>
@@ -543,10 +542,9 @@ let curPark=null;
 function facilChip(name){ return `<span class="facil"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l4 4 10-10"/></svg>${name}</span>`; }
 function openPark(pid){
   curPark=PARK_BY_ID[pid]; const p=curPark; const st=parkStats(p);
-  document.getElementById('backLabel').textContent=p.name;
   document.getElementById('parkBody').innerHTML=`
-    <div class="park-head"><h2 id="parkTitle" style="cursor:pointer">${p.name}</h2>
-      <button class="about-toggle" id="aboutToggle" aria-expanded="false">About<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="park-head"><h2 id="parkTitle" style="cursor:pointer">${(p.region||'').indexOf('Algonquin')===0?'Algonquin · '+p.name:p.name}</h2>
+      <button class="about-toggle" id="aboutToggle" aria-expanded="false">About ${p.name}<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></button>
       <div class="about-body" id="aboutBody" hidden>
         <div class="blurb">${p.blurb}</div>
         <div class="facils">${p.facilities.map(facilChip).join('')}</div>
@@ -588,7 +586,7 @@ function renderCgs(){ const box=document.getElementById('cgs'); box.innerHTML=''
     const card=document.createElement('div'); card.className='cg'; card.dataset.cg=cg.id;
     card.innerHTML=`
       <button class="cg-row" data-toggle>
-        <div class="cg-left"><div class="cg-name">${cg.id===p.name?'Campsites':cg.id}</div><div class="cg-sub">${(cg.sub||'').split(' · ').slice(0,2).join(' · ')}</div></div>
+        <div class="cg-left"><div class="cg-name">${cg.id}</div><div class="cg-sub">${(cg.sub||'').split(' · ').slice(0,2).join(' · ')}</div></div>
         <div class="cg-right"><div class="cg-prog" ${st.rated>0?'':'hidden'}><div class="bar"><i style="width:${st.pct}%"></i></div><div class="lbl tnum">${st.rated}/${st.total}</div></div>
         <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></div>
       </button>
