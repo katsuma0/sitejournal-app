@@ -8743,6 +8743,29 @@
     "trails": []
   },
   {
+    "id": "johnepearce",
+    "name": "John E. Pearce",
+    "region": "Southwest Park · Wallacetown",
+    "url": "https://www.ontarioparks.ca/park/johnepearce",
+    "blurb": "Old-growth Carolinian forest on top of the Lake Erie bluffs, with a museum in the old Backus-Page house next door. Day use only.",
+    "fishing": "Lake Erie below the bluffs: perch, bass",
+    "fmz": "FMZ 19 (Lake Erie)",
+    "facilities": [
+      "Vault toilets",
+      "Hiking trails"
+    ],
+    "campgrounds": [],
+    "trails": [
+      {
+        "name": "Spicebush Trail",
+        "length": 1.5,
+        "difficulty": "Easy",
+        "detail": "Carolinian loop above the Erie bluffs"
+      }
+    ],
+    "dayuse": true
+  },
+  {
     "id": "kakabekafalls",
     "name": "Kakabeka Falls",
     "region": "Northern Park · Kakabeka Falls",
@@ -10973,6 +10996,22 @@
     "trails": []
   },
   {
+    "id": "komoka",
+    "name": "Komoka",
+    "region": "Southwest Park · Komoka",
+    "url": "https://www.ontarioparks.ca/park/komoka",
+    "blurb": "Thames River valley forest on London's doorstep, laced with walking and biking trails. Day use only.",
+    "fishing": "Thames River: smallmouth bass, pike, walleye",
+    "fmz": "FMZ 16",
+    "facilities": [
+      "Hiking trails",
+      "Bike trail"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true
+  },
+  {
     "id": "lakestpeter",
     "name": "Lake St. Peter",
     "region": "Southeast Park · Lake St. Peter",
@@ -12521,6 +12560,23 @@
     ]
   },
   {
+    "id": "makobegrays",
+    "name": "Makobe-Grays River",
+    "region": "Near North Park · Elk Lake",
+    "url": "https://www.ontarioparks.ca/park/makobegraysriver",
+    "blurb": "A spring whitewater run from the Ishpatina highlands down to Elk Lake, threading old burns and esker country. Backcountry permits only.",
+    "fishing": "Makobe River: brook trout, walleye",
+    "fmz": "FMZ 11",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
+  },
+  {
     "id": "mara",
     "name": "Mara",
     "region": "Central Park · Orillia",
@@ -12662,6 +12718,22 @@
         "detail": "Short creekside nature loop with herons and osprey"
       }
     ]
+  },
+  {
+    "id": "markburnham",
+    "name": "Mark S. Burnham",
+    "region": "Central Park · Peterborough",
+    "url": "https://www.ontarioparks.ca/park/marksburnham",
+    "blurb": "One of the last old-growth stands in the Kawarthas, minutes east of Peterborough. Giant maples, hemlocks and a quiet loop trail. Day use only.",
+    "fishing": "No notable fishery",
+    "fmz": "FMZ 17",
+    "facilities": [
+      "Vault toilets",
+      "Hiking trails"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true
   },
   {
     "id": "martenriver",
@@ -13725,6 +13797,23 @@
     ]
   },
   {
+    "id": "miserybay",
+    "name": "Misery Bay",
+    "region": "Northern Park · Evansville",
+    "url": "https://www.ontarioparks.ca/park/miserybay",
+    "blurb": "Manitoulin Island's quiet corner: rare coastal alvars, flat limestone shores, and 15 km of trails to Lake Huron. Day use only.",
+    "fishing": "Lake Huron shallows: bass, pike",
+    "fmz": "FMZ 14 (Lake Huron)",
+    "facilities": [
+      "Vault toilets",
+      "Hiking trails",
+      "Visitor centre"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true
+  },
+  {
     "id": "missinaibi",
     "name": "Missinaibi",
     "region": "Northern Park · Chapleau",
@@ -13794,6 +13883,126 @@
         "length": 3.0,
         "difficulty": "Easy",
         "detail": "Remnants of the 1950s logging camp on Baltic Bay"
+      }
+    ]
+  },
+  {
+    "id": "mississagi",
+    "name": "Mississagi",
+    "region": "Northern Park · Elliot Lake",
+    "url": "https://www.ontarioparks.ca/park/mississagi",
+    "blurb": "Ancient Penokean Hills north of Elliot Lake, run in partnership with Serpent River First Nation. Secluded Semiwite Lake sites and 40 km of ridge trails.",
+    "fishing": "Semiwite, Flack and Helenbar Lakes: brook trout, lake trout, bass",
+    "fmz": "FMZ 10",
+    "facilities": [
+      "Vault toilets",
+      "Water taps",
+      "Firewood",
+      "Park store",
+      "Beaches",
+      "Boat launch",
+      "Canoe/kayak rentals",
+      "Hiking trails",
+      "Backcountry sites",
+      "Walk-in sites",
+      "Amphitheatre"
+    ],
+    "campgrounds": [
+      {
+        "id": "Semiwite Lake",
+        "sub": "Secluded pull-throughs · North shore of Semiwite Lake",
+        "sites": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36",
+          "37",
+          "38",
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45",
+          "46",
+          "47",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56",
+          "57",
+          "58",
+          "59",
+          "60"
+        ]
+      },
+      {
+        "id": "Walk-in",
+        "sub": "Tent sites on the shore by the day use",
+        "sites": [
+          "61",
+          "62",
+          "63",
+          "64"
+        ]
+      }
+    ],
+    "trails": [
+      {
+        "name": "Semiwite Creek Trail",
+        "length": 3.0,
+        "difficulty": "Easy to moderate",
+        "detail": "Creekside loop from the campground"
+      },
+      {
+        "name": "Helenbar Lookout Trail",
+        "length": 7.0,
+        "difficulty": "Moderate",
+        "detail": "Ridge climb to the lookout over Helenbar Lake"
+      },
+      {
+        "name": "Cobre Lake Trail",
+        "length": 11.0,
+        "difficulty": "Difficult",
+        "detail": "Full-day loop through the Penokean Hills"
       }
     ]
   },
@@ -14686,6 +14895,23 @@
     "trails": []
   },
   {
+    "id": "obabikariver",
+    "name": "Obabika River",
+    "region": "Near North Park · Temagami",
+    "url": "https://www.ontarioparks.ca/park/obabikariver",
+    "blurb": "Home of the old-growth red and white pines of the Obabika forest and the spirit rocks of Chee-skon Lake. Backcountry permits only.",
+    "fishing": "Obabika and area lakes: lake trout, walleye, bass",
+    "fmz": "FMZ 11",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
+  },
+  {
     "id": "ojibway",
     "name": "Ojibway",
     "region": "Northern Park · Sioux Lookout",
@@ -14762,6 +14988,30 @@
       }
     ],
     "trails": []
+  },
+  {
+    "id": "ouimetcanyon",
+    "name": "Ouimet Canyon",
+    "region": "Northern Park · Dorion",
+    "url": "https://www.ontarioparks.ca/park/ouimetcanyon",
+    "blurb": "A sheer-sided gorge 100 metres deep and 150 wide, with arctic plants surviving on the shadowed floor. Boardwalk to two rim platforms. Day use only.",
+    "fishing": "No fishing in the canyon",
+    "fmz": "FMZ 6",
+    "facilities": [
+      "Vault toilets",
+      "Hiking trails",
+      "Barrier-free sites"
+    ],
+    "campgrounds": [],
+    "trails": [
+      {
+        "name": "Canyon Trail",
+        "length": 1.0,
+        "difficulty": "Easy",
+        "detail": "Boardwalk loop to two platforms over the 100 m deep canyon"
+      }
+    ],
+    "dayuse": true
   },
   {
     "id": "oxtongueriver",
@@ -15294,6 +15544,37 @@
         "length": 5.5,
         "difficulty": "Moderate",
         "detail": "Forest loop past wetlands and ridges near the Teaching Rocks"
+      }
+    ],
+    "dayuse": true
+  },
+  {
+    "id": "pigeonriver",
+    "name": "Pigeon River",
+    "region": "Northern Park · Neebing",
+    "url": "https://www.ontarioparks.ca/park/pigeonriver",
+    "blurb": "Waterfalls and gorge hikes on the river that marks the Canada-US border, at the very start of Ontario. Day use only.",
+    "fishing": "Pigeon River: pike, walleye, smallmouth bass",
+    "fmz": "FMZ 6",
+    "facilities": [
+      "Vault toilets",
+      "Water taps",
+      "Hiking trails",
+      "Visitor centre"
+    ],
+    "campgrounds": [],
+    "trails": [
+      {
+        "name": "High Falls Trail",
+        "length": 2.5,
+        "difficulty": "Easy to moderate",
+        "detail": "To the 28 m falls on the border river"
+      },
+      {
+        "name": "Finger Point Trail",
+        "length": 3.4,
+        "difficulty": "Moderate",
+        "detail": "Climb to a lookout over Lake Superior"
       }
     ],
     "dayuse": true
@@ -16960,6 +17241,22 @@
     ]
   },
   {
+    "id": "portbruce",
+    "name": "Port Bruce",
+    "region": "Southwest Park · Port Bruce",
+    "url": "https://www.ontarioparks.ca/park/portbruce",
+    "blurb": "A sandy Lake Erie swimming beach at the mouth of Catfish Creek, south of Aylmer. Day use only.",
+    "fishing": "Catfish Creek and Lake Erie: perch, bass, rainbow runs",
+    "fmz": "FMZ 19 (Lake Erie)",
+    "facilities": [
+      "Vault toilets",
+      "Beaches"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true
+  },
+  {
     "id": "portburwell",
     "name": "Port Burwell",
     "region": "Southwest Park · Port Burwell",
@@ -17251,6 +17548,29 @@
         "detail": "Along the Lake Erie shore below the bluffs"
       }
     ]
+  },
+  {
+    "id": "potholes",
+    "name": "Potholes",
+    "region": "Northern Park · Wawa",
+    "url": "https://www.ontarioparks.ca/park/potholes",
+    "blurb": "Glacial meltwater drilled smooth cylinders into the bedrock of the Kinniwabi River east of Wawa. A short walk off Highway 101. Day use only.",
+    "fishing": "Kinniwabi River: brook trout",
+    "fmz": "FMZ 9",
+    "facilities": [
+      "Vault toilets",
+      "Hiking trails"
+    ],
+    "campgrounds": [],
+    "trails": [
+      {
+        "name": "Potholes Trail",
+        "length": 0.5,
+        "difficulty": "Easy",
+        "detail": "Short walk to the glacial potholes on the Kinniwabi"
+      }
+    ],
+    "dayuse": true
   },
   {
     "id": "presquile",
@@ -23503,6 +23823,40 @@
     ]
   },
   {
+    "id": "solace",
+    "name": "Solace",
+    "region": "Near North Park · Temagami",
+    "url": "https://www.ontarioparks.ca/park/solace",
+    "blurb": "A chain of quiet lakes on the western edge of the Temagami wilderness, linked by rugged portages. Backcountry permits only.",
+    "fishing": "Lake trout, walleye, pike",
+    "fmz": "FMZ 11",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
+  },
+  {
+    "id": "spanishriver",
+    "name": "Spanish River",
+    "region": "Northern Park · Massey",
+    "url": "https://www.ontarioparks.ca/park/spanishriver",
+    "blurb": "The classic whitewater canoe trip: pool-and-drop rapids down the Spanish to the Elbow, with rail access to the put-ins. Backcountry permits only.",
+    "fishing": "Spanish River: walleye, pike, smallmouth bass",
+    "fmz": "FMZ 10",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
+  },
+  {
     "id": "springwater",
     "name": "Springwater",
     "region": "Central Park · Midhurst",
@@ -23635,6 +23989,23 @@
       }
     ],
     "trails": []
+  },
+  {
+    "id": "sturgeonriver",
+    "name": "Sturgeon River",
+    "region": "Near North Park · Field",
+    "url": "https://www.ontarioparks.ca/park/sturgeonriver",
+    "blurb": "A wild river corridor pouring out of Temagami country toward Lake Nipissing, with whitewater for experienced trippers. Backcountry permits only.",
+    "fishing": "Sturgeon River: walleye, pike, sturgeon (protected)",
+    "fmz": "FMZ 11",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
   },
   {
     "id": "algonquintea",
@@ -23897,6 +24268,51 @@
         "detail": "Boat-access loop over billion year old twisted rock"
       }
     ],
+    "backcountry": true
+  },
+  {
+    "id": "tidewater",
+    "name": "Tidewater",
+    "region": "Northern Park · Moosonee",
+    "url": "https://www.ontarioparks.ca/park/tidewater",
+    "blurb": "Five islands in the Moose River estuary, 20 km from James Bay. Water taxi from Moosonee, seals and belugas offshore. Operated with Moose Cree First Nation.",
+    "fishing": "Moose River estuary: pike, walleye, brook trout, whitefish",
+    "fmz": "FMZ 3",
+    "facilities": [
+      "Vault toilets",
+      "Firewood",
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [
+      {
+        "id": "Charles Island",
+        "sub": "First-come tent sites · Water taxi from Moosonee",
+        "sites": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20"
+        ]
+      }
+    ],
+    "trails": [],
     "backcountry": true
   },
   {
@@ -24679,6 +25095,23 @@
         "detail": "Short deer trail with one big hill at the start"
       }
     ]
+  },
+  {
+    "id": "wabakimi",
+    "name": "Wabakimi",
+    "region": "Northern Park · Armstrong",
+    "url": "https://www.ontarioparks.ca/park/wabakimi",
+    "blurb": "Canada's second largest wilderness park: two million acres of boreal canoe country and woodland caribou range north of Armstrong. Permits reservable, routes endless.",
+    "fishing": "Walleye, pike, brook trout across a thousand lakes",
+    "fmz": "FMZ 2",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
   },
   {
     "id": "wakamilake",
@@ -25465,5 +25898,22 @@
       }
     ],
     "trails": []
+  },
+  {
+    "id": "woodlandcaribou",
+    "name": "Woodland Caribou",
+    "region": "Northern Park · Red Lake",
+    "url": "https://www.ontarioparks.ca/park/woodlandcaribou",
+    "blurb": "Granite canoe wilderness running to the Manitoba border, with ancient pictographs and more caribou than people. Backcountry permits only.",
+    "fishing": "Walleye, pike, lake trout",
+    "fmz": "FMZ 2",
+    "facilities": [
+      "Backcountry sites",
+      "Boat launch"
+    ],
+    "campgrounds": [],
+    "trails": [],
+    "dayuse": true,
+    "backcountry": true
   }
 ]
