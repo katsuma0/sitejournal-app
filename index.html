@@ -366,7 +366,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.108 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.109 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -651,7 +651,7 @@ function renderParks(){ const box=document.getElementById('parkList'); box.inner
     b.addEventListener('click',()=>openPark(p.id)); box.appendChild(b); }); }
 
 /* ================= single park ================= */
-let curPark=null;
+let curPark=null; var homeScrollY=0;
 function facilChip(name){ return `<span class="facil"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l4 4 10-10"/></svg>${name}</span>`; }
 function openPark(pid){
   curPark=PARK_BY_ID[pid]; const p=curPark; const st=parkStats(p);
@@ -683,6 +683,7 @@ function openPark(pid){
     <div id="topSection" hidden><div class="seclabel">Top sites</div><ul class="rank" id="topSites"></ul></div>`;
   renderCgs(); renderTrails(); wireParkControls(); updatePark(); renderGlance();
   document.getElementById('parkTitle').addEventListener('click',function(){ onParkNameTap(p); });
+  homeScrollY=window.scrollY||document.documentElement.scrollTop||0;
   document.getElementById('view-parks').hidden=true; const vp=document.getElementById('view-park'); vp.hidden=false;
   vp.classList.remove('view-anim'); void vp.offsetWidth; vp.classList.add('view-anim'); window.scrollTo(0,0);
   requestAnimationFrame(()=>{ window.scrollTo(0,0); document.documentElement.scrollTop=0; document.body.scrollTop=0; });
@@ -692,7 +693,7 @@ function goHome(){ const vp=document.getElementById('view-park');
   setTimeout(function(){ vp.classList.remove('view-out'); vp.hidden=true;
     const vh=document.getElementById('view-parks'); vh.hidden=false;
     vh.classList.remove('view-anim'); void vh.offsetWidth; vh.classList.add('view-anim');
-    clearGSearch(); renderParks(); window.scrollTo(0,0); },150); }
+    clearGSearch(); renderParks(); window.scrollTo(0,homeScrollY); },150); }
 document.getElementById('backBtn').addEventListener('click',goHome);
 (function(){ const rb=document.getElementById('resetBtn'); if(!rb) return; let armed=false, t=null;
   rb.addEventListener('click',function(){
@@ -707,15 +708,15 @@ document.getElementById('backBtn').addEventListener('click',goHome);
 (function(){ /* interactive drag-back: the park page follows your finger and reveals home underneath */
   var vp=document.getElementById('view-park'), vh=document.getElementById('view-parks');
   var sx=0, sy=0, dx=0, lastX=0, lastT=0, vel=0, deciding=false, dragging=false;
-  function prep(){ vh.hidden=false; vh.classList.add('under'); vp.classList.add('dragback'); }
+  function prep(){ vh.hidden=false; vh.classList.add('under'); vh.style.transform='translateY(-'+homeScrollY+'px)'; vp.classList.add('dragback'); }
   function cancel(){ vp.style.transition='transform .22s cubic-bezier(.22,1,.36,1)'; vp.style.transform='translateX(0)';
     setTimeout(function(){ vp.style.transition=''; vp.style.transform=''; vp.classList.remove('dragback');
-      vh.classList.add? vh.classList.remove('under'):0; vh.hidden=true; },230); }
+      vh.classList.remove('under'); vh.style.transform=''; vh.hidden=true; },230); }
   function complete(){ buzz(9);
     vp.style.transition='transform .18s ease-out'; vp.style.transform='translateX(105%)';
     setTimeout(function(){ vp.style.transition=''; vp.style.transform=''; vp.classList.remove('dragback');
-      vh.classList.remove('under'); vp.hidden=true; vh.hidden=false;
-      clearGSearch(); renderParks(); window.scrollTo(0,0); },190); }
+      vh.classList.remove('under'); vh.style.transform=''; vp.hidden=true; vh.hidden=false;
+      clearGSearch(); renderParks(); window.scrollTo(0,homeScrollY); },190); }
   vp.addEventListener('touchstart',function(e){ if(e.touches.length!==1) return;
     sx=e.touches[0].clientX; sy=e.touches[0].clientY; lastX=sx; lastT=Date.now(); vel=0; dx=0; deciding=true; dragging=false; },{passive:true});
   vp.addEventListener('touchmove',function(e){ if(!deciding&&!dragging) return;
