@@ -266,7 +266,7 @@
   .lightbox{position:fixed;inset:0;z-index:60;background:rgba(19,32,25,.92);display:none;align-items:center;justify-content:center;padding:24px}
   .lightbox.on{display:flex} .lightbox img{max-width:100%;max-height:100%;border-radius:var(--r-sm)}
 
-  footer{max-width:720px;margin:0 auto;padding:20px 18px 40px;color:var(--moss);font-size:11.5px;line-height:1.55}
+  footer{max-width:720px;margin:0 auto;padding:20px 18px 40px;color:var(--moss);font-size:13.5px;line-height:1.55}
   footer a{color:var(--forest)}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
@@ -350,7 +350,7 @@
   .titlebar{display:flex;align-items:baseline;justify-content:space-between;gap:9px}
   .ver{appearance:none;border:none;background:none;cursor:pointer;font-family:inherit;
     font-weight:800;font-size:15px;letter-spacing:-.02em;color:var(--ink);white-space:nowrap;padding:0;margin:5px 0 0}
-  .resetlink{appearance:none;border:none;background:none;padding:0;cursor:pointer;font-family:inherit;font-size:11.5px;line-height:1.55;
+  .resetlink{appearance:none;border:none;background:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;line-height:1.55;
     color:#B0574A;text-decoration:underline;text-underline-offset:2px;font-weight:600}
   .resetlink.armed{font-weight:800}
   @keyframes viewOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(64px)}}
@@ -447,7 +447,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.177</button></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.178</button></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time. Ratings and photos are saved to this device only.</div>
   </div>
   <div class="wrap">
@@ -979,7 +979,7 @@ var regionFilter='All';
 var sortMode='Default'; try{ let sm=localStorage.getItem('site-journal-sort'); if(sm==='A to Z') sm='Default'; if(sm==='Closest to town') sm='Closest to GTA'; if(['Default','Progress','Top rated','Closest to GTA'].indexOf(sm)>=0) sortMode=sm; }catch(e){}
 const SORT_MODES=['Default','Progress','Top rated','Closest to GTA'];
 const GROUP_MODES=['None','Letter','Park type','Region','Rated'];
-let groupMode='None';
+let groupMode='Region';
 try{ const gm=localStorage.getItem('site-journal-group'); if(GROUP_MODES.indexOf(gm)>=0) groupMode=gm; }catch(e){}
 const groupOpen={};
 function groupOpenSet(){ if(!groupOpen[groupMode]) groupOpen[groupMode]=(groupMode==='Rated')?{'Rated':true}:{}; return groupOpen[groupMode]; }
