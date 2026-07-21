@@ -373,7 +373,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.120 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.121 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -586,6 +586,14 @@ function searchAll(q){ q=q.trim().toLowerCase(); if(!q) return [];
   });
   if(nameQ && !siteTok.length) SEARCH_TRAILS.forEach(t=>{ if(nameTok.every(x=>t.name.toLowerCase().includes(x)))
     res.push({type:'trail',score:nameHit(t.name,nameQ,75),parkId:t.parkId,trailName:t.name,title:t.name,sub:t.parkName+' · '+t.difficulty+' · '+fmtLen(t.length)}); });
+  /* the Wildlands answers the search directly, regardless of any list filtering */
+  if(!res.some(r=>r.type==='park'&&r.parkId===EGG_ID)){
+    const eg=PARKS.find(p=>p.id===EGG_ID);
+    if(eg){ const pn=eg.name.toLowerCase();
+      const ets=nameTok.filter(t=>STOP.indexOf(t)<0);
+      if(ets.length&&!siteTok.length&&ets.every(t=>pn.includes(t)))
+        res.push({type:'park',score:200,parkId:eg.id,title:eg.name,
+          sub:eggFound()?(((eg.region||'').split(' · ').slice(1).join(' · '))||eg.region):'Tap to discover'}); } }
   const TYPE_RANK={park:0,cg:1,site:2,trail:3};
   res.sort((a,b)=>(TYPE_RANK[a.type]-TYPE_RANK[b.type])||(b.score-a.score)); return res.slice(0,15);
 }
