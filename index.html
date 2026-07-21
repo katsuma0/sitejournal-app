@@ -27,6 +27,11 @@
   body,.card,.sheet,.backbar,.swatch{transition:background-color .25s ease,color .25s ease,border-color .25s ease}
   /* ---- Theme swatches (settings sheet) ---- */
   .themerow{display:flex;flex-direction:column;gap:var(--gap-m);margin-top:14px}
+  .xapp{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);
+    background:var(--card);border-radius:12px;padding:14px 16px;font-weight:700;font-size:14.5px;
+    color:var(--ink);text-decoration:none}
+  .xapp:active{transform:scale(.98)}
+  .xapp .xgo{font-size:12px;font-weight:800;color:var(--forest)}
   .swatch{display:flex;align-items:center;gap:var(--gap-m);padding:var(--pad-row);border-radius:var(--r-sm);
     border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-size:14.5px;font-weight:700;
     cursor:pointer;box-shadow:var(--shadow-sm);text-align:left;-webkit-tap-highlight-color:transparent}
@@ -67,7 +72,26 @@
   .appbar{padding:calc(20px + env(safe-area-inset-top)) 18px 14px;max-width:720px;margin:0 auto}
   .eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--forest)}
   .appbar h1{font-weight:800;font-size:30px;letter-spacing:-.02em;margin:5px 0 0}
-  .appbar .sub{color:var(--moss);font-size:13.5px;margin-top:5px}
+  .appbar .sub{color:var(--moss);font-size:13.5px;margin-top:5px;line-height:1.4}
+
+  /* ---------- the map under the home page ---------- */
+  .mapbar{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;
+    padding:calc(8px + env(safe-area-inset-top)) 0 0;background:none;border:none;cursor:pointer;
+    font-family:inherit;-webkit-tap-highlight-color:transparent}
+  .mapbar .mb{width:40px;height:4px;border-radius:99px;background:var(--mist-2)}
+  .mapbar:active .mb{background:var(--forest)}
+  .mapbar-txt{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:800;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--moss)}
+  #view-parks .appbar{padding-top:10px}
+  #mapLayer{position:fixed;inset:0;z-index:4;background:var(--paper)}
+  #mapLayer iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  #mapLayer .mapfall{position:absolute;top:42%;width:100%;text-align:center;color:var(--moss);font-size:14px}
+  body.mapopen{overflow:hidden}
+  body.mapopen #view-parks{position:fixed;left:0;right:0;top:0;height:100dvh;z-index:6;overflow:hidden;
+    transform:translateY(calc(100dvh - 92px));border-radius:16px 16px 0 0;
+    background:var(--paper);box-shadow:0 -8px 40px rgba(19,32,25,.22);
+    transition:transform .34s cubic-bezier(.32,1.22,.38,1)}
+  body.mapopen.mapclosing #view-parks{transform:translateY(0)}
 
   .backbar{position:sticky;top:0;z-index:20;background:var(--forest);color:var(--paper);
     padding:calc(11px + env(safe-area-inset-top)) 18px 11px}
@@ -449,10 +473,19 @@
 </head>
 <body>
 
+<div id="mapLayer" hidden>
+  <div class="mapfall">The map needs a connection.</div>
+  <iframe id="mapFrame" title="Ontario parks and fishing zones map"></iframe>
+</div>
+
 <section id="view-parks">
+  <button class="mapbar" id="mapBar" aria-label="Show the map">
+    <span class="mb"></span>
+    <span class="mapbar-txt"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path d="m6 9 6 6 6-6"/></svg>Map</span>
+  </button>
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.180</button></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.181</button></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time. Ratings and photos are saved to this device only.</div>
   </div>
   <div class="wrap">
@@ -543,8 +576,9 @@
 <div class="sheet" id="versionsSheet" role="dialog" aria-modal="true" aria-label="Versions">
   <div class="grabber"></div>
   <div class="kind" style="margin-bottom:12px">Versions</div>
-  <div class="verline"><span class="vv">v0.180</span>Every campsite checked against the reservation system, wrong numbers fixed</div>
-  <div class="verline"><span class="vv">v0.179</span>Backup export and import, the journal travels as one file</div>
+  <div class="verline"><span class="vv">v0.181</span>One app: the fishing map moves in, parks get pins</div>
+  <div class="verline"><span class="vv">v0.180</span>Every site checked against reservations</div>
+  <div class="verline"><span class="vv">v0.179</span>Backup export and import</div>
   <div class="verline"><span class="vv">v0.154</span>Tap the version for this history</div>
   <div class="verline"><span class="vv">v0.152</span>Tap target and copy audit</div>
   <div class="verline"><span class="vv">v0.151</span>Smoother swipe back</div>
@@ -588,6 +622,8 @@
         <p>I've been camping since I was a kid, and now I'm the person booking the campsites I visit with friends and family. It's stressful picking out the right campsite, and to be frank, there are some campsites (and campgrounds) out there that are not it.</p>
         <p>So, I wanted to create a personal journal where you can log your favourite sites and the ones you'd rather avoid. When you have free time out camping, you can take a nice walk around the campground and jot down which sites you'd like to book next, give it a rating, and so on.</p>
         <p>It's a pleasant excuse for a walk around the campgrounds, and it gives you ease knowing which campsite to book next time and not be surprised with a funky site.</p>
+        <div class="kind" style="margin:24px 0 12px">Ontario Fishing</div>
+        <a class="xapp" href="https://katsuma0.github.io/on-fishing-reg/">ON Fishing Regulation<span class="xgo">Open</span></a>
         <div class="kind" style="margin:24px 0 12px">Themes</div>
   <div class="themerow" id="themeRow"></div>
   <div class="theme-count" id="themeCount"></div>
@@ -1151,7 +1187,7 @@ function openPark(pid){
         <div class="blurb">${p.blurb}</div>
         <div class="facils">${p.facilities.map(facilChip).join('')}</div>
         <div class="fishing"><b>Fishing:</b> ${p.fishing}</div>
-        ${(m=>m?`<a class="fmz" href="https://katsuma0.github.io/on-fishing-reg/#zone=${m[1]}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>FMZ ${m[1]} - ONfishingreg \u2197</a>`:`<div class="fmz"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>${p.fmz}</div>`)((p.fmz||'').match(/FMZ\s*(\d+)/))}
+        ${(m=>m?`<a class="fmz" href="https://katsuma0.github.io/on-fishing-reg/#zone=${m[1]}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>FMZ ${m[1]} - ONfishingreg \u2197</a>`:`<div class="fmz"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>${p.fmz}</div>`)((p.fmz||'').match(/FMZ\s*(\d+)/))}
                 <a class="fmz" href="${p.url}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4 10 14"/><path d="M9 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/></svg>Official park page \u2197</a>
       </div>
     </div>
@@ -1758,6 +1794,52 @@ makeSheetSwipe(sheet,closeSheet);
   await loadPhotoIndex();        /* fast local IndexedDB */
   migrateAlgPhotos();
   refreshParksFromNetwork();     /* background: pick up any hosted data update */
+})();
+(function(){ /* the map lives under the home page; pull the handle down to reveal it */
+  var FISH_URL=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
+      ?'http://localhost:8898/#embed=parks'
+      :'https://katsuma0.github.io/on-fishing-reg/#embed=parks';
+  var layer=document.getElementById('mapLayer'), frame=document.getElementById('mapFrame'),
+      bar=document.getElementById('mapBar'), view=document.getElementById('view-parks'),
+      txt=bar.querySelector('.mapbar-txt'), isOpen=false, loaded=false, dragged=false;
+  function openMap(){ if(isOpen) return; isOpen=true;
+    if(!loaded){ loaded=true; frame.src=FISH_URL; }
+    window.scrollTo(0,0); layer.hidden=false;
+    void layer.offsetWidth; /* paint the layer first so the slide can animate */
+    document.body.classList.add('mapopen');
+    txt.lastChild.textContent='Back to parks'; buzz(8); }
+  function closeMap(){ if(!isOpen) return; isOpen=false;
+    document.body.classList.add('mapclosing');
+    setTimeout(function(){
+      document.body.classList.remove('mapopen'); document.body.classList.remove('mapclosing');
+      layer.hidden=true; },360);
+    txt.lastChild.textContent='Map'; buzz(8); }
+  window.sjCloseMap=closeMap;
+  bar.addEventListener('click',function(e){ e.stopPropagation();
+    if(dragged){ dragged=false; return; } if(isOpen) closeMap(); else openMap(); });
+  view.addEventListener('click',function(e){
+    if(isOpen){ e.preventDefault(); e.stopPropagation(); closeMap(); } },true);
+  var y0=null;
+  bar.addEventListener('touchstart',function(e){ y0=e.touches[0].clientY; dragged=false; },{passive:true});
+  bar.addEventListener('touchmove',function(e){ if(y0==null) return;
+    var dy=e.touches[0].clientY-y0; if(Math.abs(dy)>12) dragged=true;
+    if(!isOpen&&dy>60){ y0=null; openMap(); }
+    else if(isOpen&&dy<-60){ y0=null; closeMap(); } },{passive:true});
+  bar.addEventListener('touchend',function(){ y0=null; });
+  window.addEventListener('message',function(e){
+    var d=e.data||{};
+    if(d.type==='sj-open-park'&&PARK_BY_ID[d.id]){ closeMap(); setTimeout(function(){ openPark(d.id); },220); } });
+})();
+(function(){ /* #park=<id> deep links, from the map pins and the fishing app */
+  function fromHash(){
+    var m=(location.hash||'').match(/park=([a-z0-9]+)/); if(!m) return;
+    var pid=m[1]; if(!PARK_BY_ID[pid]) return;
+    if(pid===EGG_ID&&!eggFound()) revealEgg();
+    if(window.sjCloseMap) sjCloseMap();
+    openPark(pid);
+    history.replaceState(null,'',location.pathname+location.search); }
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
 })();
 if('serviceWorker' in navigator){
   if(window.Capacitor){
