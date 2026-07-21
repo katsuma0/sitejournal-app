@@ -398,6 +398,9 @@
   #townSheet{height:min(88vh,760px);height:min(88dvh,760px);display:flex;flex-direction:column}
   #townSheet .townq{flex:none}
   #townSheet .townlist{flex:1;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+  .dummybtn{display:block;width:100%;margin-top:12px;appearance:none;border:none;cursor:pointer;font-family:inherit;
+    background:var(--forest);color:var(--paper);font-weight:800;font-size:13.5px;border-radius:var(--r-sm);padding:12px}
+  .dummybtn:active{transform:scale(.98)}
 </style>
 </head>
 <body>
@@ -405,7 +408,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.132 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.133 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -425,6 +428,7 @@
         <p>So I wanted to create a personal logger where you can log your favourite sites and the ones you'd rather avoid. When you have free time out camping, you can take a nice walk around the campground and jot down which sites you'd like to book next, give it a rating, and so on.</p>
         <p>It's a nice excuse for a walk around the campgrounds, and it gives you ease knowing which campsite to book next time and not be surprised with a funky site.</p>
         <label class="fld">Versions</label>
+        <div class="verline"><span class="vv">v0.133</span>Added a park rating card to every park</div>
         <div class="verline"><span class="vv">v0.128</span>Added a per park stats section with rating graphs</div>
         <div class="verline"><span class="vv">v0.116</span>Added driving times from any Ontario town you choose</div>
         <div class="verline"><span class="vv">v0.113</span>Refreshed every park theme to match its name and character</div>
@@ -641,7 +645,7 @@ function searchAll(q){ q=q.trim().toLowerCase(); if(!q) return [];
 function onGSearch(){ const gq=document.getElementById('gq'), q=gq.value;
   if(q.trim().toLowerCase()==='debugsearch'){ renderDebug(); return; }
   if(q.trim().toLowerCase()==='statsearch'){ renderStats(); return; }
-  if(q.trim().toLowerCase()==='dummydata'){ makeDummyData(); return; }
+  if(q.trim().toLowerCase()==='dummydata'){ renderDummyCard(''); return; }
   document.getElementById('gsearch').classList.toggle('has',!!q.trim());
   const rbox=document.getElementById('gresults'), plist=document.getElementById('parkList'), about=document.querySelector('.about-scout');
   if(!q.trim()){ rbox.hidden=true; rbox.innerHTML=''; plist.hidden=false; if(about) about.hidden=false; return; }
@@ -677,7 +681,95 @@ function renderDebug(){
   pairs.push(['errors',DEBUG_ERRS.length?DEBUG_ERRS.slice(-3).join(' | '):'none']);
   renderConsole('debugsearch',pairs);
 }
-function makeDummyData(){
+function renderDummyCard(msg){
+  const rbox=document.getElementById('gresults'), plist=document.getElementById('parkList'), about=document.querySelector('.about-scout');
+  plist.hidden=true; if(about) about.hidden=true; rbox.hidden=false;
+  rbox.innerHTML='<div class="dbg"><div class="dhead">&gt; dummydata</div>'
+    +'<div class="drow"><span class="dk">status</span><span class="dv">'+esc(msg||'ready, nothing planted')+'</span></div>'
+    +'<button class="dummybtn" id="dummyGo">'+(msg?'Plant again, reshuffled':'Plant dummy data')+'</button></div>';
+  const go=document.getElementById('dummyGo');
+  if(go) go.addEventListener('click',()=>{ buzz(9); const m=plantDummy(); renderDummyCard(m); });
+}
+function plantDummy(){
+  /* clear the previous batch first so every press is a fresh randomization */
+  const D=state.dummy||{site:[],campground:[],trail:[],themes:[],pins:[]};
+  D.site.forEach(k=>{ delete state.site[k]; });
+  D.campground.forEach(k=>{ delete state.campground[k]; });
+  D.trail.forEach(k=>{ delete state.trail[k]; });
+  if(Array.isArray(state.pins)) D.pins.forEach(pid=>{ const i=state.pins.indexOf(pid); if(i>=0) state.pins.splice(i,1); });
+  try{ const u=getUnlocks().filter(id=>D.themes.indexOf(id)<0); localStorage.setItem(UNLOCK_KEY,JSON.stringify(u)); }catch(e){}
+  const ND={site:[],campground:[],trail:[],themes:[],pins:[]};
+  const MK=[43.86,-79.34];
+  const NOTES=['Nice and shaded','Great view of the water','Too close to the comfort station','Slopes a bit at the back',
+    'Perfect for the trailer','Buggy in July','Book this one again','Huge site, very private','Neighbours can see everything',
+    'Nowhere decent for the hammock','Short walk to the beach','Road noise at night','Firewood drop nearby','Best sunset spot',
+    'Tight squeeze for the car','Would take this over anything nearby'];
+  const skew=()=>{ const r=Math.random();
+    if(r<0.02) return 0; if(r<0.06) return 1; if(r<0.15) return 2; if(r<0.35) return 3; if(r<0.75) return 4; return 5; };
+  const shuffled=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const distMK=p=>{ const ll=PARK_LL[p.id]||[0,0]; return havKm(MK[0],MK[1],ll[0],ll[1]); };
+  const MUST=['grundy','mikisew','awenda','bonecho','silentlake','algonquincanisbay'];
+  const eligible=PARKS.filter(p=>!p.dayuse&&p.id!==EGG_ID&&p.campgrounds.some(c=>cgSites(c).length)).sort((a,b)=>distMK(a)-distMK(b));
+  const targetParks=Math.max(6, 5+Math.floor(Math.random()*6));
+  const chosen=[]; MUST.forEach(id=>{ const p=PARK_BY_ID[id]; if(p) chosen.push(p); });
+  for(const p of eligible){ if(chosen.length>=targetParks) break; if(chosen.indexOf(p)<0) chosen.push(p); }
+  let siteN=0; const cgKeys=[], ratedKeys=[], perPark={};
+  chosen.forEach(p=>{
+    let cgs=p.campgrounds.filter(c=>cgSites(c).length&&!/backcountry/i.test(c.id));
+    if(p.id==='grundy') cgs=cgs.filter(c=>/hemlock|jack/i.test(c.id));
+    else if(p.id==='bonecho') cgs=cgs.filter(c=>/hardwood/i.test(c.id));
+    else if(p.id==='awenda') cgs=cgs.filter(c=>/bear/i.test(c.id));
+    else if(p.id==='silentlake') cgs=[shuffled(cgs)[0]];
+    else if(p.id!=='algonquincanisbay') cgs=shuffled(cgs).slice(0, Math.min(cgs.length, 1+(Math.random()<0.45?1:0)));
+    if(!cgs.length) return;
+    const pool=[];
+    cgs.forEach(cg=>{ cgKeys.push(cidOf(p.id,cg.id)); const sites=cgSites(cg); const frac=0.25+Math.random()*0.65;
+      shuffled(sites).slice(0, Math.max(2, Math.round(sites.length*frac))).forEach(sit=>{
+        const k=keyOf(p.id,cg.id,sit);
+        if(sc('site',k)==null&&!state.site[k]){ state.site[k]={score:skew()}; ND.site.push(k); ratedKeys.push(['site',k]); siteN++;
+          perPark[p.id]=(perPark[p.id]||0)+1; }
+        pool.push(k); }); });
+    const wc=[0,1,1,2,2,3,4][Math.floor(Math.random()*7)];
+    shuffled(pool).slice(0,wc).forEach(k=>{ const e=state.site[k];
+      if(e&&ND.site.indexOf(k)>=0&&!e.want) e.want=true;
+      else if(!state.site[k]){ state.site[k]={want:true}; ND.site.push(k); } });
+  });
+  const ratedParks=Object.keys(perPark);
+  /* campground level ratings, 5-10 */
+  let cgN=0; shuffled(cgKeys).slice(0, 5+Math.floor(Math.random()*6)).forEach(k=>{
+    if(!state.campground[k]){ state.campground[k]={score:skew()}; ND.campground.push(k); ratedKeys.push(['campground',k]); cgN++; } });
+  /* trails, 5-20, from rated parks then outward */
+  const trailPool=[]; eligible.forEach(p=>{ if(ratedParks.indexOf(p.id)>=0||trailPool.length<40)
+    (p.trails||[]).forEach(t=>trailPool.push([p.id,p.id+'#'+t.name])); });
+  let trN=0; const trTarget=5+Math.floor(Math.random()*16);
+  shuffled(trailPool).slice(0,trTarget).forEach(pt=>{ const k=pt[1];
+    if(!state.trail[k]){ state.trail[k]={score:skew()}; ND.trail.push(k); ratedKeys.push(['trail',k]); trN++; perPark[pt[0]]=(perPark[pt[0]]||0)+1; } });
+  /* day use parks, 1-5 */
+  const dayers=PARKS.filter(p=>p.dayuse&&p.id!==EGG_ID).sort((a,b)=>distMK(a)-distMK(b));
+  let duN=0; dayers.slice(0, 1+Math.floor(Math.random()*5)).forEach(p=>{ const k=cidOf(p.id,p.name);
+    if(!state.campground[k]){ state.campground[k]={score:skew()}; ND.campground.push(k); ratedKeys.push(['campground',k]); duN++; perPark[p.id]=(perPark[p.id]||0)+1; } });
+  /* notes, 5-50, only on entries we planted */
+  let ntN=0; shuffled(ratedKeys).slice(0, 5+Math.floor(Math.random()*46)).forEach(bk=>{
+    const e=state[bk[0]][bk[1]]; if(e&&!e.note){ e.note=NOTES[Math.floor(Math.random()*NOTES.length)]; ntN++; } });
+  /* themes 5-50: rated parks first, then random fillers, never the egg */
+  const themeTarget=5+Math.floor(Math.random()*46);
+  const already=getUnlocks();
+  let themeIds=Object.keys(perPark).filter(id=>id!==EGG_ID&&THEME_BY_ID[id]);
+  shuffled(PARK_THEMES.map(t=>t.id)).forEach(id=>{ if(themeIds.length<themeTarget&&id!==EGG_ID&&themeIds.indexOf(id)<0) themeIds.push(id); });
+  themeIds=themeIds.slice(0,themeTarget);
+  const newlyUnlocked=themeIds.filter(id=>already.indexOf(id)<0);
+  try{ localStorage.setItem(UNLOCK_KEY,JSON.stringify(already.concat(newlyUnlocked))); }catch(e){}
+  ND.themes=newlyUnlocked;
+  /* pins: 3-5 of the most-rated parks */
+  if(!Array.isArray(state.pins)) state.pins=[];
+  const pinN=3+Math.floor(Math.random()*3);
+  Object.keys(perPark).sort((a,b)=>perPark[b]-perPark[a]).slice(0,pinN).forEach(pid=>{
+    if(state.pins.indexOf(pid)<0){ state.pins.push(pid); ND.pins.push(pid); } });
+  state.dummy=ND; persist(); renderParks();
+  showThemeToast('Dummy season planted.');
+  return siteN+' sites, '+cgN+' cgs, '+trN+' trails, '+duN+' dayuse, '+ntN+' notes, '+newlyUnlocked.length+' themes, '+ND.pins.length+' pins';
+}
+function makeDummyDataOld(){
   const MK=[43.86,-79.34];
   const skew=()=>{ const r=Math.random();
     if(r<0.02) return 0; if(r<0.06) return 1; if(r<0.15) return 2; if(r<0.35) return 3; if(r<0.75) return 4; return 5; };
@@ -879,7 +971,7 @@ function openPark(pid){
     </div>
     ${p.dayuse?'':'<div class="seclabel">Campgrounds</div>'}
     <div id="cgs"></div>
-    ${p.dayuse?'<div class="seclabel">Rating</div><button class="trail" id="parkRate"><div class="tr-left"><div class="tr-name">Rate this park</div><div class="tr-meta">Notes and photos too</div></div><span class="tr-rate" id="prVal" hidden></span></button>':''}
+
     ${(p.trails&&p.trails.length)?'<div class="seclabel">Trails</div><div id="trails"></div>':''}
     <div id="glanceSection" hidden>
     <div class="seclabel">At a glance</div>
@@ -893,7 +985,9 @@ function openPark(pid){
     <div id="wantSection" hidden><div class="seclabel">Wishlist</div><div id="wantList"></div></div>
     <div id="topSection" hidden><div class="seclabel">Top sites</div><ul class="rank" id="topSites"></ul></div>
     ${p.dayuse?'':`<div class="seclabel">Stats</div>
-    <details class="statscard"><summary>Park stats<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary><div class="statsbody" id="statsBody"></div></details>`}`;
+    <details class="statscard"><summary>Park stats<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary><div class="statsbody" id="statsBody"></div></details>`}
+    <div class="seclabel">${p.dayuse?'Rating':'Park rating'}</div>
+    <button class="trail" id="parkRate"><div class="tr-left"><div class="tr-name">Rate this park</div><div class="tr-meta">Notes and photos too</div></div><span class="tr-rate" id="prVal" hidden></span></button>`;
   renderCgs(); renderTrails(); wireParkControls(); updatePark(); renderGlance();
   document.getElementById('parkTitle').addEventListener('click',function(){ onParkNameTap(p); });
   homeScrollY=window.scrollY||document.documentElement.scrollTop||0;
