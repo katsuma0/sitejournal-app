@@ -67,7 +67,7 @@ It is a single-file vanilla app: one `index.html` with all CSS and JS inline, pa
 2. **Never rename storage keys:** `ontario-scout-v2` (main state), `site-journal-theme`, `site-journal-theme-vars`, `site-journal-unlocks`, `site-journal-sort`, `site-journal-group`, `site-journal-origin`, IndexedDB `scout-photos`.
 3. **The service worker must never register inside Capacitor** (`window.Capacitor` check). It once cache-first-served a stale index.html forever.
 4. **`refreshParksFromNetwork` returns immediately under Capacitor.** A stale `www/parks-data.json` once silently replaced 124 embedded parks with an old 123-park file. Embedded data is authoritative in the app.
-5. **Copy BOTH `index.html` and `parks-data.json` into `~/Projects/sitejournal-ios/www/`** on every update, then `npx cap copy ios`.
+5. **Copy BOTH `index.html` and `parks-data.json` into `~/Projects/sitejournal-ios/www/`** on every update, then `npx cap copy ios`. The iOS app is ONE app for both halves: the fishing build (its `index.html`, `manifest.json`, icons, and `fish/`) is bundled at `www/fishing/`, and both pages switch their cross links to the local copies when they detect Capacitor.
 6. **Verify a patch actually applied before bumping or committing.** We have shipped phantom commits when a script aborted mid-way. Never make a view a flex container (it broke auto-margin centring and compressed every page).
 7. Data changes go through the pipeline (`pipeline/build_db.py` → `export_to_app.py --all`) and get re-embedded minified into index.html.
 8. Secrets (egg, commands, themes) never appear in the Versions list.

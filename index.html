@@ -490,7 +490,7 @@
   </button>
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.182</button></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.183</button></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time. Ratings and photos are saved to this device only.</div>
   </div>
   <div class="wrap">
@@ -666,6 +666,9 @@ function cidOf(pid,cgId){ return pid+'#'+cgId; }
 /* ================= state ================= */
 let state={site:{},campground:{},trail:{}};
 const KEY='ontario-scout-v2';
+/* inside the iOS app the fishing half ships bundled at fishing/, so every link stays in the app */
+const IN_APP=!!window.Capacitor||location.protocol==='capacitor:';
+const FISHREG_BASE=IN_APP?'fishing/index.html':'https://katsuma0.github.io/on-fishing-reg/';
 function load(){ try{ const v=localStorage.getItem(KEY); if(v) state=Object.assign({site:{},campground:{},trail:{}},JSON.parse(v)); }catch(e){}
   if(!Array.isArray(state.pins)) state.pins=[]; }
 function isPinned(pid){ return Array.isArray(state.pins)&&state.pins.indexOf(pid)>=0; }
@@ -1193,7 +1196,7 @@ function openPark(pid){
         <div class="blurb">${p.blurb}</div>
         <div class="facils">${p.facilities.map(facilChip).join('')}</div>
         <div class="fishing"><b>Fishing:</b> ${p.fishing}</div>
-        ${(m=>m?`<a class="fmz" href="https://katsuma0.github.io/on-fishing-reg/#zone=${m[1]}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>FMZ ${m[1]} - ONfishingreg \u2197</a>`:`<div class="fmz"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>${p.fmz}</div>`)((p.fmz||'').match(/FMZ\s*(\d+)/))}
+        ${(m=>m?`<a class="fmz" href="${FISHREG_BASE}#zone=${m[1]}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>FMZ ${m[1]} - ONfishingreg \u2197</a>`:`<div class="fmz"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 12c-4 4-8 4-14 0 6-4 10-4 14 0Zm0 0 3-3m-3 3 3 3"/><circle cx="8.5" cy="11.5" r=".5" fill="currentColor"/></svg>${p.fmz}</div>`)((p.fmz||'').match(/FMZ\s*(\d+)/))}
                 <a class="fmz" href="${p.url}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4 10 14"/><path d="M9 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/></svg>Official park page \u2197</a>
       </div>
     </div>
@@ -1802,9 +1805,12 @@ makeSheetSwipe(sheet,closeSheet);
   refreshParksFromNetwork();     /* background: pick up any hosted data update */
 })();
 (function(){ /* the map lives under the home page; pull the handle down to reveal it */
-  var FISH_URL=(location.hostname==='localhost'||location.hostname==='127.0.0.1')
+  var FISH_URL=IN_APP?'fishing/index.html#embed=parks'
+      :(location.hostname==='localhost'||location.hostname==='127.0.0.1')
       ?'http://localhost:8898/#embed=parks'
       :'https://katsuma0.github.io/on-fishing-reg/#embed=parks';
+  var xa=document.querySelector('#settingsSheet .xapp');
+  if(xa&&IN_APP) xa.href='fishing/index.html';
   var layer=document.getElementById('mapLayer'), frame=document.getElementById('mapFrame'),
       bar=document.getElementById('mapBar'), view=document.getElementById('view-parks'),
       isOpen=false, loaded=false, dragged=false;
