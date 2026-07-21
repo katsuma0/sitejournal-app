@@ -373,7 +373,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.121 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.122 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -1249,7 +1249,15 @@ makeSheetSwipe(sheet,closeSheet);
   migrateAlgPhotos();
   refreshParksFromNetwork();     /* background: pick up any hosted data update */
 })();
-if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{})); }
+if('serviceWorker' in navigator){
+  if(window.Capacitor){
+    /* inside the iOS app the files are local; a service worker only serves stale copies. Kill any old one. */
+    try{ navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())); }catch(e){}
+    try{ if(window.caches&&caches.keys) caches.keys().then(ks=>ks.forEach(k=>caches.delete(k))); }catch(e){}
+  } else {
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+  }
+}
 </script>
 </body>
 </html>
