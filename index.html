@@ -412,6 +412,8 @@
   .gsec .gs-count{font-size:12px;font-weight:700}
   .gsec .chev{transition:transform .18s}
   .gsec.open .chev{transform:rotate(180deg)}
+  .filters .fchip{flex:1 1 0;min-width:0;justify-content:center}
+  .fchip .fct{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -419,7 +421,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.144 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.145 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -495,7 +497,7 @@
 
 <div class="sheet" id="groupSheet" role="dialog" aria-modal="true" aria-label="Group">
   <div class="grabber"></div>
-  <div class="kind" style="margin-bottom:12px">Group</div>
+  <div class="kind" style="margin-bottom:12px">Group by</div>
   <div id="groupRows"></div>
 </div>
 
@@ -974,13 +976,13 @@ function regionOrder(){ const found=new Set(PARKS.map(broadOf));
   found.forEach(r=>{ if(order.indexOf(r)<0) order.push(r); }); return order; }
 function renderFilters(){ const b=document.getElementById('regionPill'); if(!b) return;
   const ch=' <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m6 9 6 6 6-6"/></svg>';
-  b.innerHTML=(regionFilter==='All'?'All regions':regionFilter)+ch;
+  b.innerHTML='<span class="fct">'+(regionFilter==='All'?'All regions':regionFilter)+'</span>'+ch;
   b.classList.toggle('on', regionFilter!=='All');
   const sb=document.getElementById('sortPill'); if(!sb) return;
-  sb.innerHTML=(sortMode==='Default'?'Sort':(sortMode==='Closest to GTA'&&ORIGIN?('Closest to '+ORIGIN.name):sortMode))+ch;
+  sb.innerHTML='<span class="fct">'+(sortMode==='Default'?'Sort':(sortMode==='Closest to GTA'&&ORIGIN?('Closest to '+ORIGIN.name):sortMode))+'</span>'+ch;
   sb.classList.toggle('on', sortMode!=='Default');
   const gb=document.getElementById('groupPill'); if(!gb) return;
-  gb.innerHTML=(groupMode==='None'?'Group':groupMode)+ch;
+  gb.innerHTML='<span class="fct">'+(groupMode==='None'?'Group by':groupMode)+'</span>'+ch;
   gb.classList.toggle('on', groupMode!=='None'); }
 function renderSortRows(){ const box=document.getElementById('sortRows'); if(!box) return; box.innerHTML='';
   SORT_MODES.forEach(m=>{ const b=document.createElement('button'); b.className='rrow'+(m===sortMode?' on':'');
