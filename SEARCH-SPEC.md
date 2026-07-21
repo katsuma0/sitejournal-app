@@ -46,6 +46,7 @@ Each result is one full-width button: a small **category bubble** on the left, t
 
 ### The category bubble (.tag) — the signature element
 - **Fixed size: 46px wide × 22px tall.** Never sizes to its text; every bubble in the column is identical, which is what makes the list read as designed.
+- **Perfectly centred vertically.** The bubble sits dead-centre against the two-line text block: equal space above and below it. Three rules working together guarantee this: the row has `align-items:center`, the pill has `align-self:center` plus `margin:auto 0`, and the pill centres its own label with `display:flex; align-items:center; justify-content:center; line-height:1`. Include all three or the pill drifts toward the top on taller rows.
 - Fully rounded (`border-radius:99px`), text perfectly centred via flex
 - Font: **9.5px**, weight **800**, `letter-spacing:.03em`, UPPERCASE, `line-height:1`, colour `--paper` (i.e. light text on a coloured pill)
 - Labels are 4–5 characters max so they fit the fixed pill: Park / Camp / Site / Trail. Fishing versions: Zone / Fish / Lake / Rule
@@ -75,7 +76,7 @@ Same card treatment, centred: 14px `--moss` text, padding 18px 6px, border and 1
 ```css
 .gresult{width:100%;text-align:left;appearance:none;background:var(--card);border:1px solid var(--line);
   border-radius:12px;padding:12px 14px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:10px}
-.tag{flex:0 0 46px;width:46px;height:22px;display:flex;align-items:center;justify-content:center;align-self:center;
+.tag{flex:0 0 46px;width:46px;height:22px;display:flex;align-items:center;justify-content:center;align-self:center;margin:auto 0;
   font-size:9.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;line-height:1;padding:0;
   color:var(--paper);background:var(--forest);border-radius:99px}
 .tag.fish{background:var(--forest-2)}
