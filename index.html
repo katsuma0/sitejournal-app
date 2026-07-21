@@ -358,7 +358,7 @@
   .trail:active,.cg-head:active{transform:scale(.99)}
   .cg.open .grid{animation:viewIn .18s ease}
   #view-park.dragback{position:fixed;left:0;right:0;z-index:5;background:var(--paper);
-    width:100vw;max-width:none;margin:0;padding:0 max(18px,calc((100vw - 720px)/2));min-height:100vh;
+    width:100%;max-width:none;margin:0;padding:0;min-height:100vh;
     box-shadow:none;touch-action:pan-y;will-change:transform}
   .parkfoot{margin:26px 0 6px;text-align:center}
   .verline{font-size:12.5px;color:var(--moss);margin:7px 0;line-height:1.5}
@@ -437,7 +437,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.160</button></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.161</button></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time. Photos and ratings are saved to this device only.</div>
   </div>
   <div class="wrap">
@@ -1178,7 +1178,7 @@ document.getElementById('backBtn').addEventListener('click',goHome);
   var vp=document.getElementById('view-park'), vh=document.getElementById('view-parks');
   var sx=0, sy=0, dx=0, lastX=0, lastT=0, vel=0, deciding=false, dragging=false, parkScrollY=0;
   function prep(){ parkScrollY=window.scrollY||document.documentElement.scrollTop||0;
-    vp.classList.add('dragback'); vp.style.top=(-parkScrollY)+'px';
+    vp.classList.remove('view-anim'); vp.classList.add('dragback'); vp.style.top=(-parkScrollY)+'px';
     vh.hidden=false; window.scrollTo(0,homeScrollY); }
   function cancel(){ vp.style.transition='transform .22s cubic-bezier(.22,1,.36,1)'; vp.style.transform='translateX(0)';
     setTimeout(function(){ window.scrollTo(0,parkScrollY); vh.hidden=true;
