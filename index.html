@@ -372,7 +372,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.116 beta</span></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><span class="ver">v0.117 beta</span></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time.</div>
   </div>
   <div class="wrap">
@@ -463,8 +463,8 @@
   <div class="grabber"></div>
   <div class="kind" style="margin-bottom:12px">Sort</div>
   <div id="sortRows"></div>
-  <div id="townPick" hidden>
-    <input id="townQ" class="townq" type="text" placeholder="Search any Ontario town" autocomplete="off">
+  <div id="townPick">
+    <input id="townQ" class="townq" type="text" placeholder="Departure" autocomplete="off">
     <div id="townList"></div>
   </div>
 </div>
@@ -612,10 +612,9 @@ function wireGlobalSearch(){ const gq=document.getElementById('gq');
 
 /* ================= parks list ================= */
 var regionFilter='All';
-var sortMode='Default'; try{ let sm=localStorage.getItem('site-journal-sort'); if(sm==='A to Z') sm='Default'; if(['Default','Progress','Top rated','Closest to GTA','Closest to town'].indexOf(sm)>=0) sortMode=sm; }catch(e){}
-if(sortMode==='Closest to town'&&!ORIGIN) sortMode='Default';
+var sortMode='Default'; try{ let sm=localStorage.getItem('site-journal-sort'); if(sm==='A to Z') sm='Default'; if(sm==='Closest to town') sm='Closest to GTA'; if(['Default','Progress','Top rated','Closest to GTA'].indexOf(sm)>=0) sortMode=sm; }catch(e){}
 const SORT_MODES=['Default','Progress','Top rated','Closest to GTA'];
-const TOWN_MODE='Closest to town';
+
 var DRIVE_H={"brontecreek":0.5,"darlington":0.75,"forksofthecredit":1.0,"monocliffs":1.25,"boynevalley":1.25,"sibbaldpoint":1.25,"earlrowe":1.25,"springwater":1.25,"shorthills":1.25,"markburnham":1.5,"wasagabeach":1.5,"mara":1.5,"mcraepoint":1.5,"basslake":1.5,"rockpoint":1.5,"devilsglen":1.75,"balsamlake":1.75,"emily":1.75,"turkeypoint":1.75,"selkirk":1.75,"presquile":1.75,"ferris":1.75,"craigleith":2.0,"awenda":2.0,"longpoint":2.0,"sixmilelake":2.0,"northbeach":2.0,"petroglyphs":2.0,"komoka":2.25,"portbruce":2.25,"portburwell":2.25,"kawarthahighlands":2.25,"pinery":2.5,"sandbanks":2.5,"silentlake":2.5,"arrowhead":2.5,"oastlerlake":2.5,"themassasauga":2.5,"johnepearce":2.5,"pointfarms":2.75,"algonquintea":2.75,"oxtongueriver":2.75,"inverhuron":3.0,"macgregorpoint":3.0,"rondeau":3.0,"bonecho":3.0,"sharbotlake":3.0,"grundy":3.0,"killbear":3.0,"mikisew":3.0,"sturgeonbay":3.0,"lakestpeter":3.0,"frontenac":3.0,"algonquincanisbay":3.0,"algonquinmew":3.0,"algonquintworivers":3.0,"saublefalls":3.25,"charlestonlake":3.25,"silverlake":3.25,"algonquinpog":3.25,"algonquinkearney":3.25,"wheatley":3.5,"murphyspoint":3.5,"restoule":3.5,"frenchriver":3.5,"algonquinraccoon":3.5,"algonquinrock":3.5,"rideauriver":3.75,"killarney":4.0,"chutes":4.0,"bonnechere":4.0,"fairbank":4.25,"fitzroy":4.25,"samueldechamplain":4.5,"martenriver":4.5,"windylake":4.5,"algonquinachray":4.5,"halfwaylake":4.75,"algonquinkiosk":4.75,"voyageur":5.0,"finlaysonpoint":5.0,"spanishriver":5.0,"driftwood":5.25,"algonquinbrent":5.5,"sturgeonriver":5.5,"obabikariver":5.75,"mississagi":6.0,"solace":6.0,"miserybay":6.0,"makobegrays":6.25,"eskerlakes":6.5,"kettlelakes":7.5,"batchawanabay":7.75,"pancakebay":8.0,"wakamilake":8.0,"lakesuperior":8.5,"ivanhoelake":8.5,"missinaibi":9.0,"potholes":9.25,"renebrunelle":9.5,"nagagamisis":10.0,"whitelake":10.5,"fushimilake":10.5,"neys":11.5,"rainbowfalls":12.0,"sleepinggiant":13.0,"macleod":13.5,"ouimetcanyon":13.5,"silverfalls":13.75,"kakabekafalls":14.0,"pigeonriver":14.5,"quetico":15.5,"sandbarlake":15.75,"aaron":16.5,"ojibway":17.0,"bluelake":17.25,"wabakimi":17.5,"pakwash":18.0,"woodlandcaribou":18.25,"siouxnarrows":18.5,"rushingriver":18.75,"caliperlake":19.25,"tidewater":null,"queenelizabethii":2.25};
 var PARK_LL={"aaron":[49.77,-92.62],"algonquinachray":[45.87,-77.72],"algonquinbrent":[46.03,-78.49],"algonquincanisbay":[45.57,-78.62],"algonquinkearney":[45.54,-78.45],"algonquinkiosk":[46.09,-78.88],"algonquinmew":[45.57,-78.52],"algonquinpog":[45.57,-78.44],"algonquinraccoon":[45.53,-78.42],"algonquinrock":[45.50,-78.40],"algonquintea":[45.53,-78.70],"algonquintworivers":[45.58,-78.48],"arrowhead":[45.39,-79.20],"awenda":[44.85,-79.99],"balsamlake":[44.65,-78.93],"basslake":[44.60,-79.47],"batchawanabay":[46.93,-84.61],"bluelake":[49.86,-93.42],"bonecho":[44.90,-77.20],"bonnechere":[45.68,-77.55],"boynevalley":[44.13,-80.13],"brontecreek":[43.41,-79.77],"caliperlake":[49.06,-93.91],"charlestonlake":[44.50,-76.03],"chutes":[46.22,-81.76],"craigleith":[44.54,-80.34],"darlington":[43.87,-78.77],"devilsglen":[44.36,-80.18],"driftwood":[46.20,-77.85],"earlrowe":[44.15,-79.90],"emily":[44.38,-78.53],"eskerlakes":[48.32,-79.88],"fairbank":[46.47,-81.45],"ferris":[44.28,-77.79],"finlaysonpoint":[47.31,-79.79],"fitzroy":[45.47,-76.21],"forksofthecredit":[43.80,-80.01],"frenchriver":[46.02,-80.58],"frontenac":[44.55,-76.53],"fushimilake":[49.83,-83.92],"grundy":[45.93,-80.55],"halfwaylake":[46.90,-81.63],"inverhuron":[44.29,-81.58],"ivanhoelake":[48.13,-82.53],"johnepearce":[42.63,-81.47],"kakabekafalls":[48.40,-89.62],"kawarthahighlands":[44.73,-78.18],"kettlelakes":[48.57,-80.87],"killarney":[46.02,-81.40],"killbear":[45.36,-80.21],"komoka":[42.96,-81.42],"lakestpeter":[45.32,-78.03],"lakesuperior":[47.35,-84.63],"longpoint":[42.58,-80.39],"macgregorpoint":[44.40,-81.44],"macleod":[49.72,-86.95],"makobegrays":[47.90,-80.50],"mara":[44.60,-79.28],"markburnham":[44.31,-78.26],"martenriver":[46.73,-79.79],"mcraepoint":[44.60,-79.30],"mikisew":[45.83,-79.38],"miserybay":[45.79,-82.75],"missinaibi":[48.35,-83.68],"mississagi":[46.72,-82.66],"monocliffs":[44.03,-80.06],"murphyspoint":[44.78,-76.43],"nagagamisis":[49.47,-84.68],"neys":[48.78,-86.60],"northbeach":[43.94,-77.55],"oastlerlake":[45.29,-80.04],"obabikariver":[47.05,-80.15],"ojibway":[49.97,-92.14],"ouimetcanyon":[48.77,-88.67],"oxtongueriver":[45.41,-78.89],"pakwash":[50.77,-93.43],"pancakebay":[46.97,-84.70],"petroglyphs":[44.62,-78.05],"pigeonriver":[48.00,-89.58],"pinery":[43.25,-81.83],"pointfarms":[43.81,-81.71],"portbruce":[42.65,-81.01],"portburwell":[42.65,-80.81],"potholes":[47.96,-84.27],"presquile":[44.00,-77.73],"queenelizabethii":[44.83,-78.72],"quetico":[48.68,-91.13],"rainbowfalls":[48.84,-87.40],"renebrunelle":[49.42,-82.18],"restoule":[46.06,-79.78],"rideauriver":[45.13,-75.65],"rockpoint":[42.85,-79.54],"rondeau":[42.29,-81.85],"rushingriver":[49.68,-94.22],"samueldechamplain":[46.28,-78.92],"sandbanks":[43.90,-77.24],"sandbarlake":[49.62,-91.55],"saublefalls":[44.68,-81.26],"selkirk":[42.83,-79.94],"sharbotlake":[44.77,-76.69],"shorthills":[43.10,-79.28],"sibbaldpoint":[44.32,-79.33],"silentlake":[44.91,-78.06],"silverfalls":[48.58,-89.62],"silverlake":[44.83,-76.58],"siouxnarrows":[49.40,-94.07],"sixmilelake":[44.90,-79.77],"sleepinggiant":[48.34,-88.90],"solace":[47.10,-80.30],"spanishriver":[46.85,-81.90],"springwater":[44.43,-79.73],"sturgeonbay":[45.59,-80.42],"sturgeonriver":[46.87,-80.05],"themassasauga":[45.19,-80.05],"tidewater":[51.26,-80.63],"turkeypoint":[42.71,-80.33],"voyageur":[45.59,-74.52],"wabakimi":[50.60,-89.80],"wakamilake":[47.65,-82.80],"wasagabeach":[44.52,-80.02],"wheatley":[42.09,-82.45],"whitelake":[48.76,-85.76],"windylake":[46.61,-81.45],"woodlandcaribou":[51.10,-94.80]};
 var TOWNS=[["Toronto",43.65,-79.38],["Markham",43.86,-79.34],["Scarborough",43.77,-79.26],["North York",43.77,-79.41],["Etobicoke",43.65,-79.57],["Mississauga",43.59,-79.64],["Brampton",43.73,-79.76],["Vaughan",43.84,-79.51],["Richmond Hill",43.88,-79.44],["Newmarket",44.06,-79.46],["Aurora",44.00,-79.47],["Pickering",43.84,-79.09],["Ajax",43.85,-79.02],["Whitby",43.90,-78.94],["Oshawa",43.90,-78.86],["Bowmanville",43.91,-78.69],["Oakville",43.45,-79.68],["Burlington",43.33,-79.80],["Milton",43.51,-79.88],["Hamilton",43.26,-79.87],["St. Catharines",43.16,-79.25],["Niagara Falls",43.09,-79.08],["Welland",42.99,-79.25],["Guelph",43.55,-80.25],["Kitchener",43.45,-80.49],["Waterloo",43.46,-80.52],["Cambridge",43.36,-80.31],["Brantford",43.14,-80.26],["Simcoe",42.84,-80.30],["London",42.98,-81.25],["Woodstock",43.13,-80.75],["Tillsonburg",42.86,-80.73],["St. Thomas",42.78,-81.19],["Sarnia",42.97,-82.40],["Chatham",42.40,-82.19],["Windsor",42.30,-83.02],["Leamington",42.05,-82.60],["Stratford",43.37,-80.98],["Goderich",43.74,-81.71],["Owen Sound",44.57,-80.94],["Collingwood",44.50,-80.22],["Wasaga Beach",44.52,-80.02],["Midland",44.75,-79.89],["Orangeville",43.92,-80.09],["Barrie",44.39,-79.69],["Orillia",44.61,-79.42],["Keswick",44.24,-79.47],["Uxbridge",44.11,-79.12],["Port Perry",44.10,-78.94],["Lindsay",44.36,-78.74],["Peterborough",44.31,-78.32],["Port Hope",43.95,-78.29],["Cobourg",43.96,-78.17],["Colborne",44.01,-77.89],["Brighton",44.04,-77.73],["Trenton",44.10,-77.58],["Belleville",44.16,-77.38],["Napanee",44.25,-76.95],["Picton",44.00,-77.14],["Kingston",44.23,-76.49],["Gananoque",44.33,-76.16],["Brockville",44.59,-75.68],["Cornwall",45.02,-74.73],["Ottawa",45.42,-75.70],["Kanata",45.31,-75.90],["Perth",44.90,-76.25],["Smiths Falls",44.90,-76.02],["Carleton Place",45.14,-76.14],["Arnprior",45.43,-76.36],["Renfrew",45.47,-76.68],["Pembroke",45.83,-77.11],["Petawawa",45.89,-77.28],["Bancroft",45.06,-77.85],["Haliburton",45.05,-78.51],["Minden",44.93,-78.73],["Fenelon Falls",44.53,-78.74],["Bobcaygeon",44.54,-78.54],["Bracebridge",45.04,-79.31],["Gravenhurst",44.92,-79.37],["Huntsville",45.33,-79.22],["Parry Sound",45.35,-80.03],["North Bay",46.31,-79.46],["Sturgeon Falls",46.37,-79.93],["Sudbury",46.49,-81.00],["Espanola",46.26,-81.77],["Elliot Lake",46.38,-82.65],["Blind River",46.19,-82.96],["Sault Ste. Marie",46.52,-84.33],["Wawa",47.99,-84.77],["Marathon",48.72,-86.38],["Terrace Bay",48.78,-87.10],["Nipigon",49.02,-88.27],["Thunder Bay",48.38,-89.25],["Atikokan",48.76,-91.62],["Fort Frances",48.61,-93.40],["Dryden",49.78,-92.84],["Kenora",49.77,-94.49],["Sioux Lookout",50.10,-91.92],["Red Lake",51.03,-93.83],["Ignace",49.41,-91.66],["Timmins",48.48,-81.33],["Cochrane",49.07,-81.02],["Kapuskasing",49.42,-82.43],["Hearst",49.69,-83.67],["Kirkland Lake",48.15,-80.03],["New Liskeard",47.51,-79.68],["Temagami",47.06,-79.78],["Chapleau",47.84,-83.40],["Moosonee",51.27,-80.65]];
@@ -639,28 +638,28 @@ function renderFilters(){ const b=document.getElementById('regionPill'); if(!b) 
   b.innerHTML=(regionFilter==='All'?'All regions':regionFilter)+ch;
   b.classList.toggle('on', regionFilter!=='All');
   const sb=document.getElementById('sortPill'); if(!sb) return;
-  sb.innerHTML=(sortMode==='Default'?'Sort':(sortMode===TOWN_MODE?('Closest to '+(ORIGIN?ORIGIN.name:'a town')):sortMode))+ch;
+  sb.innerHTML=(sortMode==='Default'?'Sort':(sortMode==='Closest to GTA'&&ORIGIN?('Closest to '+ORIGIN.name):sortMode))+ch;
   sb.classList.toggle('on', sortMode!=='Default'); }
 function renderSortRows(){ const box=document.getElementById('sortRows'); if(!box) return; box.innerHTML='';
   SORT_MODES.forEach(m=>{ const b=document.createElement('button'); b.className='rrow'+(m===sortMode?' on':'');
-    const hint=m==='Default'?'A to Z':(m==='Progress'?'Most scouted':(m==='Top rated'?'Highest average':'Driving time from Toronto'));
+    const hint=m==='Default'?'A to Z':(m==='Progress'?'Most scouted':(m==='Top rated'?'Highest average':'Driving time from '+(ORIGIN?ORIGIN.name:'Toronto')));
     b.innerHTML='<span>'+m+'</span><span class="rcount">'+hint+'</span>';
     b.addEventListener('click',()=>{ sortMode=m; try{localStorage.setItem('site-journal-sort',m);}catch(e){} buzz(9); closeSort(); renderFilters(); renderParks(); });
     box.appendChild(b); });
-  const tb=document.createElement('button'); tb.className='rrow'+(sortMode===TOWN_MODE?' on':'');
-  tb.innerHTML='<span>Closest to a town</span><span class="rcount">'+(ORIGIN?ORIGIN.name:'Pick any Ontario town')+'</span>';
-  tb.addEventListener('click',()=>{ buzz(6); const tp=document.getElementById('townPick'); tp.hidden=!tp.hidden;
-    if(!tp.hidden){ const q=document.getElementById('townQ'); q.value=''; renderTownList(''); setTimeout(()=>q.focus(),50); } });
-  box.appendChild(tb); }
+  const q=document.getElementById('townQ');
+  if(q){ q.value=''; q.placeholder='Departure: '+(ORIGIN?ORIGIN.name:'Toronto (GTA)'); }
+  const tl=document.getElementById('townList'); if(tl) tl.innerHTML=''; }
 function renderTownList(q){ const list=document.getElementById('townList'); q=(q||'').trim().toLowerCase();
-  const hits=TOWNS.filter(t=>!q||t[0].toLowerCase().indexOf(q)>=0).slice(0,6);
+  if(!q){ list.innerHTML=''; return; }
+  const hits=[['Toronto (GTA)',0,0]].concat(TOWNS).filter(t=>t[0].toLowerCase().indexOf(q)>=0).slice(0,6);
   list.innerHTML='';
   hits.forEach(t=>{ const b=document.createElement('button'); b.className='rrow';
     b.innerHTML='<span>'+t[0]+'</span>';
-    b.addEventListener('click',()=>{ ORIGIN={name:t[0],lat:t[1],lon:t[2]};
-      try{localStorage.setItem('site-journal-origin',JSON.stringify(ORIGIN));}catch(e){}
-      sortMode=TOWN_MODE; try{localStorage.setItem('site-journal-sort',TOWN_MODE);}catch(e){}
-      buzz(9); document.getElementById('townPick').hidden=true; closeSort(); renderFilters(); renderParks(); });
+    b.addEventListener('click',()=>{
+      if(t[0]==='Toronto (GTA)'){ ORIGIN=null; try{localStorage.removeItem('site-journal-origin');}catch(e){} }
+      else{ ORIGIN={name:t[0],lat:t[1],lon:t[2]}; try{localStorage.setItem('site-journal-origin',JSON.stringify(ORIGIN));}catch(e){} }
+      sortMode='Closest to GTA'; try{localStorage.setItem('site-journal-sort',sortMode);}catch(e){}
+      buzz(9); closeSort(); renderFilters(); renderParks(); });
     list.appendChild(b); }); }
 (function(){ const q=document.getElementById('townQ'); if(q) q.addEventListener('input',()=>renderTownList(q.value)); })();
 function openSort(){ renderSortRows(); settingsBackdrop.classList.add('on'); document.getElementById('sortSheet').classList.add('on'); document.getElementById('sortSheet').scrollTop=0; lockScroll(); }
@@ -678,8 +677,7 @@ function closeRegion(){ const rs=document.getElementById('regionSheet'); setting
 function metaLine(p,st){ const isAlg=(p.region||'').indexOf('Algonquin')===0;
   const town=((p.region||'').split(' · ').slice(1).join(' · ')||p.region);
   const segs=[];
-  if(sortMode==='Closest to GTA') segs.push(driveLabel(p));
-  if(sortMode===TOWN_MODE){ const tl=townLabel(p); if(tl) segs.push(tl); }
+  if(sortMode==='Closest to GTA') segs.push(ORIGIN?(townLabel(p)||driveLabel(p)):driveLabel(p));
   if(p.backcountry){ segs.push(town); const n=p.campgrounds.length; if(n>1) segs.push(n+' campgrounds'); if(st.total>0) segs.push(st.total+' sites'); segs.push('Backcountry'); }
   else if(p.dayuse){ segs.push(town); segs.push('Day use'); }
   else if(isAlg){ if(regionFilter!=='Algonquin') segs.push('Algonquin'); segs.push(st.total+' sites'); }
@@ -693,9 +691,7 @@ function renderParks(){ const box=document.getElementById('parkList'); box.inner
   const SM={}; shown.forEach(p=>SM[p.id]=parkStats(p));
   const dflt=(a,b)=>a.name.localeCompare(b.name)||(idx.get(a.id)-idx.get(b.id));
   let cmp=dflt;
-  if(sortMode==='Closest to GTA') cmp=(a,b)=>{ const ha=DRIVE_H[a.id], hb=DRIVE_H[b.id];
-    return ((ha==null?999:ha)-(hb==null?999:hb))||dflt(a,b); };
-  else if(sortMode===TOWN_MODE) cmp=(a,b)=>{ const ha=townHours(a), hb=townHours(b);
+  if(sortMode==='Closest to GTA') cmp=(a,b)=>{ const ha=ORIGIN?townHours(a):DRIVE_H[a.id], hb=ORIGIN?townHours(b):DRIVE_H[b.id];
     return ((ha==null?999:ha)-(hb==null?999:hb))||dflt(a,b); };
   else if(sortMode==='Progress') cmp=(a,b)=>{ const x=SM[a.id],y=SM[b.id];
     const fx=x.total?x.rated/x.total:0, fy=y.total?y.rated/y.total:0;
@@ -977,10 +973,10 @@ async function renderGlance(){ const p=curPark; if(!p) return;
 var THEME_KEY='site-journal-theme', VARS_KEY='site-journal-theme-vars', UNLOCK_KEY='site-journal-unlocks';
 var FOREST={id:'forest',name:'Default',paper:'#F1F6F1',ink:'#0F1F17',primary:'#00753A'};
 var PARK_THEMES=[ /* alphabetical; A-parks stay close to Default, then palettes grow bolder and echo each name */
-  {id:'aaron', name:'Aaron', paper:'#F1F6F2', ink:'#15281B', primary:'#22773A'},
-  {id:'algonquinachray', name:'Achray', paper:'#F1F6F4', ink:'#152820', primary:'#227751'},
-  {id:'arrowhead', name:'Arrowhead', paper:'#F1F6F5', ink:'#152823', primary:'#22775F'},
-  {id:'awenda', name:'Awenda', paper:'#F1F6F2', ink:'#152818', primary:'#22772F'},
+  {id:'aaron', name:'Aaron', paper:'#F1F6F1', ink:'#0F1F17', primary:'#2E6FB0'},
+  {id:'algonquinachray', name:'Achray', paper:'#F1F6F1', ink:'#0F1F17', primary:'#B0622E'},
+  {id:'arrowhead', name:'Arrowhead', paper:'#F1F6F1', ink:'#0F1F17', primary:'#7A4FB0'},
+  {id:'awenda', name:'Awenda', paper:'#F1F6F1', ink:'#0F1F17', primary:'#0E8A8A'},
   {id:'balsamlake', name:'Balsam Lake', paper:'#F3F4F7', ink:'#191F2E', primary:'#435893'},
   {id:'basslake', name:'Bass Lake', paper:'#F3F4F7', ink:'#19222E', primary:'#436493'},
   {id:'batchawanabay', name:'Batchawana Bay', paper:'#0F1A20', ink:'#E5EEF3', primary:'#4FA3C0', dark:true},
