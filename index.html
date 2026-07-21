@@ -353,6 +353,9 @@
   .resetlink{appearance:none;border:none;background:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;line-height:1.55;
     color:#B0574A;text-decoration:underline;text-underline-offset:2px;font-weight:600}
   .resetlink.armed{font-weight:800}
+  .backuplink{appearance:none;border:none;background:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;line-height:1.55;
+    color:var(--moss);text-decoration:underline;text-underline-offset:2px;font-weight:600}
+  .backuplink.armed{font-weight:800;color:#B0574A}
   @keyframes viewOut{from{opacity:1;transform:none}to{opacity:0;transform:translateX(64px)}}
   .view-out{animation:viewOut .15s ease forwards}
   @media (prefers-reduced-motion: reduce){ .view-out{animation:none} }
@@ -427,6 +430,8 @@
   .backbtn{padding:12px 14px;margin:-12px -14px}
   .resetlink{position:relative}
   .resetlink::after{content:"";position:absolute;left:-16px;right:-16px;top:-12px;bottom:-12px}
+  .backuplink{position:relative}
+  .backuplink::after{content:"";position:absolute;left:-16px;right:-16px;top:-12px;bottom:-12px}
   .dummybtn{min-height:44px}
   .gsec{min-height:46px}
   .ded-close{min-height:44px}
@@ -447,7 +452,7 @@
 <section id="view-parks">
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.178</button></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.179</button></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time. Ratings and photos are saved to this device only.</div>
   </div>
   <div class="wrap">
@@ -465,7 +470,10 @@
     Ratings and photos are saved to this device only.<br>
     Created by <a href="https://katsuma0.github.io" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:2px">Katsuma Onishi</a>
     <br><br>
+    <button class="backuplink" id="exportBtn">Export a backup</button><br><br>
+    <button class="backuplink" id="importBtn">Import a backup</button><br><br>
     <button class="resetlink" id="resetBtn">Reset all data</button>
+    <input type="file" id="importInput" accept=".json,application/json" hidden>
   </footer>
 </section>
 
@@ -535,6 +543,7 @@
 <div class="sheet" id="versionsSheet" role="dialog" aria-modal="true" aria-label="Versions">
   <div class="grabber"></div>
   <div class="kind" style="margin-bottom:12px">Versions</div>
+  <div class="verline"><span class="vv">v0.179</span>Backup export and import, the journal travels as one file</div>
   <div class="verline"><span class="vv">v0.154</span>Tap the version for this history</div>
   <div class="verline"><span class="vv">v0.152</span>Tap target and copy audit</div>
   <div class="verline"><span class="vv">v0.151</span>Smoother swipe back</div>
@@ -1195,6 +1204,54 @@ document.getElementById('backBtn').addEventListener('click',function(){
         t=setTimeout(function(){ window.parkResetSync(); },4000); return; }
       clearTimeout(t); await wipeParkData(curPark.id); window.parkResetSync(); });
     window.parkResetSync(); }
+})();
+(function(){ /* backup: the whole journal travels as one JSON file, ratings, notes, photos, themes and all */
+  var BK_KEYS=['ontario-scout-v2','site-journal-theme','site-journal-theme-vars','site-journal-unlocks','site-journal-sort','site-journal-group','site-journal-origin'];
+  var eb=document.getElementById('exportBtn'), ib=document.getElementById('importBtn'), fi=document.getElementById('importInput');
+  if(!eb||!ib||!fi) return;
+  function allPhotos(){ return openDB().then(function(db){ return new Promise(function(res){ var tx=db.transaction(STORE,'readonly');
+    var rq=tx.objectStore(STORE).getAll(); rq.onsuccess=function(){ res(rq.result||[]); }; rq.onerror=function(){ res([]); }; }); }).catch(function(){ return []; }); }
+  function buildBackup(){ return allPhotos().then(function(rows){
+    var photos={}; rows.forEach(function(r){ if(r&&r.siteId&&Array.isArray(r.list)&&r.list.length) photos[r.siteId]=r.list; });
+    var data={}; BK_KEYS.forEach(function(k){ try{ var v=localStorage.getItem(k); if(v!=null) data[k]=v; }catch(e){} });
+    return {app:'site-journal',format:1,appVersion:'0.179',exported:new Date().toISOString(),data:data,photos:photos}; }); }
+  function backupName(){ var d=new Date(); function p(n){ return (n<10?'0':'')+n; }
+    return 'site-journal-backup-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json'; }
+  function exportDone(){ showThemeToast('Backup exported. Keep it somewhere safe.'); }
+  function downloadFile(file){ if(window.Capacitor){ showThemeToast('Sharing is not available right now. Try again.'); return; }
+    var url=URL.createObjectURL(file); var a=document.createElement('a'); a.href=url; a.download=file.name;
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },1200); exportDone(); }
+  function deliver(file){
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      return navigator.share({files:[file]}).then(exportDone).catch(function(err){ if(err&&err.name==='AbortError') return; downloadFile(file); }); }
+    downloadFile(file); return Promise.resolve(); }
+  eb.addEventListener('click',function(){ if(eb.disabled) return; eb.disabled=true;
+    buildBackup().then(function(payload){ var file=new File([JSON.stringify(payload)],backupName(),{type:'application/json'}); return deliver(file); })
+      .catch(function(){ showThemeToast('Could not build the backup. Try again.'); })
+      .then(function(){ eb.disabled=false; }); });
+  var pendingPayload=null, armT=null;
+  function disarmImport(){ pendingPayload=null; clearTimeout(armT); ib.classList.remove('armed'); ib.textContent='Import a backup'; }
+  ib.addEventListener('click',function(){
+    if(pendingPayload){ clearTimeout(armT); applyBackup(pendingPayload); pendingPayload=null; return; }
+    fi.value=''; fi.click(); });
+  fi.addEventListener('change',function(){
+    var f=fi.files&&fi.files[0]; if(!f) return;
+    f.text().then(function(txt){ var p=null; try{ p=JSON.parse(txt); }catch(e){}
+      if(!p||p.app!=='site-journal'||!p.data||typeof p.data['ontario-scout-v2']!=='string'){ showThemeToast('That file is not a Site Journal backup.'); return; }
+      var n=0; try{ var s=JSON.parse(p.data['ontario-scout-v2']);
+        ['site','campground','trail'].forEach(function(t){ var m=s&&s[t]||{}; for(var k in m){ if(m[k]&&typeof m[k].score==='number') n++; } }); }catch(e){}
+      pendingPayload=p; ib.classList.add('armed');
+      ib.textContent='Tap again to restore '+n+(n===1?' rating':' ratings');
+      armT=setTimeout(disarmImport,6000); })
+      .catch(function(){ showThemeToast('Could not read that file.'); }); });
+  function applyBackup(p){
+    try{ clearTimeout(saveTimer); }catch(e){}
+    BK_KEYS.forEach(function(k){ try{ if(typeof p.data[k]==='string') localStorage.setItem(k,p.data[k]); else localStorage.removeItem(k); }catch(e){} });
+    var photos=(p.photos&&typeof p.photos==='object')?p.photos:{};
+    openDB().then(function(db){ return new Promise(function(res){ var tx=db.transaction(STORE,'readwrite'); var st=tx.objectStore(STORE); st.clear();
+      Object.keys(photos).forEach(function(k){ var list=photos[k]; if(Array.isArray(list)&&list.length) st.put({siteId:k,list:list}); });
+      tx.oncomplete=function(){ res(); }; tx.onerror=function(){ res(); }; }); }).catch(function(){})
+      .then(function(){ showThemeToast('Backup restored. Welcome back.'); setTimeout(function(){ location.reload(); },900); }); }
 })();
 (function(){ /* interactive drag-back: the park page follows your finger and reveals home underneath */
   var vp=document.getElementById('view-park'), vh=document.getElementById('view-parks');
