@@ -87,6 +87,10 @@
   #mapLayer iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   #mapLayer .mapfall{position:absolute;top:42%;width:100%;text-align:center;color:var(--moss);font-size:14px}
   body{overscroll-behavior-y:none} /* the pull-down owns the top edge, not the rubber band */
+  /* smooth crossings: same-origin page jumps (to and from the fishing app) cross-fade */
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.22s}
+  @media (prefers-reduced-motion:reduce){ @view-transition{navigation:none} }
   #view-parks{position:relative}
   /* the page layout never changes between rest, drag and open, so nothing reflows
      and the page slides as one crisp piece. Only the transform and the sheet
@@ -495,7 +499,7 @@
   </button>
   <div class="appbar">
     <div class="eyebrow">Ontario Parks</div>
-    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.186</button></div>
+    <div class="titlebar"><h1 id="appTitle" style="cursor:pointer;-webkit-tap-highlight-color:transparent">Site Journal</h1><button class="ver" id="verBtn">v0.187</button></div>
     <div class="sub">Pick a park, open its campgrounds, and go for a nice walk around the sites. Rate them and note which you'd book next time. Ratings and photos are saved to this device only.</div>
   </div>
   <div class="wrap">
